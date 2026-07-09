@@ -243,18 +243,19 @@ function sendOrder() {
     
     text += `💰 *ИТОГО К ОПЛАТЕ: ${total} ₸*`;
     
-    // Новая надежная система: если телефон поддерживает системное шаринг-меню (Android/iOS)
-    if (navigator.share) {
-        navigator.share({
-            text: text
-        }).catch(err => {
-            // Если отменили или произошел сбой, отправляем стандартно без номера чата
-            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
-        });
-    } else {
-        // Запасной вариант для старых ПК/браузеров
-        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
-    }
+    // Копируем текст заказа в буфер обмена телефона
+    const tempInput = document.createElement("textarea");
+    tempInput.value = text;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    tempInput.setSelectionRange(0, 99999);
+    document.execCommand("copy");
+    document.body.removeChild(tempInput);
+    
+    alert("Заказ скопирован! Сейчас откроется WhatsApp — выберите нужную ГРУППУ и просто НАЖМИТЕ «ВСТАВИТЬ» (Paste).");
+    
+    // Перенаправляем в WhatsApp на страницу выбора любого чата/группы
+    window.open("https://api.whatsapp.com/xz", "_blank");
 }
 
 // Живой поиск
