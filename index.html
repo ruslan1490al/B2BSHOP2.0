@@ -54,7 +54,6 @@
 </div>
 
 <script>
-// Твой каталог товаров
 const catalogData = [
   {
     category: "Печенье сахарное",
@@ -243,22 +242,14 @@ function sendOrder() {
     
     text += `💰 *ИТОГО К ОПЛАТЕ: ${total} ₸*`;
     
-    // Копируем текст заказа в буфер обмена телефона
-    const tempInput = document.createElement("textarea");
-    tempInput.value = text;
-    document.body.appendChild(tempInput);
-    tempInput.select();
-    tempInput.setSelectionRange(0, 99999);
-    document.execCommand("copy");
-    document.body.removeChild(tempInput);
+    // Специальная прямая системная ссылка WhatsApp без указания номера
+    const whatsappUrl = `whatsapp://send?text=${encodeURIComponent(text)}`;
     
-    alert("Заказ скопирован! Сейчас откроется WhatsApp — выберите нужную ГРУППУ и просто НАЖМИТЕ «ВСТАВИТЬ» (Paste).");
-    
-    // Перенаправляем в WhatsApp на страницу выбора любого чата/группы
-    window.open("https://api.whatsapp.com/xz", "_blank");
+    // Запускаем автоматическое открытие приложения WhatsApp со списком выбора чатов/групп
+    window.location.href = whatsappUrl;
 }
 
-// Живой поиск
+// Поиск
 document.getElementById('search').addEventListener('input', function(e) {
     const query = e.target.value.toLowerCase();
     const categories = document.querySelectorAll('.category');
