@@ -242,55 +242,7 @@ function sendOrder() {
     
     text += `💰 *ИТОГО К ОПЛАТЕ: ${total} ₸*`;
     
-    // Специальная прямая системная ссылка WhatsApp без указания номера
-    const whatsappUrl = `whatsapp://send?text=${encodeURIComponent(text)}`;
+    // Чистая универсальная ссылка без какого-либо номера телефона
+    const cleanUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
     
-    // Запускаем автоматическое открытие приложения WhatsApp со списком выбора чатов/групп
-    window.location.href = whatsappUrl;
-}
-
-// Поиск
-document.getElementById('search').addEventListener('input', function(e) {
-    const query = e.target.value.toLowerCase();
-    const categories = document.querySelectorAll('.category');
-    
-    categories.forEach(cat => {
-        let catHasVisible = false;
-        const items = cat.querySelectorAll('.product-item');
-        const catTitle = cat.querySelector('.category-title').innerText.toLowerCase();
-        
-        if (catTitle.includes(query)) {
-            items.forEach(i => i.style.display = 'flex');
-            cat.style.display = 'block';
-            if (query.length > 0) cat.classList.add('open');
-            return;
-        }
-        
-        items.forEach(item => {
-            const name = item.dataset.name;
-            if (name.includes(query)) {
-                item.style.display = 'flex';
-                catHasVisible = true;
-            } else {
-                item.style.display = 'none';
-            }
-        });
-        
-        if (catHasVisible) {
-            cat.style.display = 'block';
-            if (query.length > 0) cat.classList.add('open');
-        } else {
-            cat.style.display = 'none';
-            cat.classList.remove('open');
-        }
-    });
-    
-    if (query.length === 0) {
-        categories.forEach(cat => cat.classList.remove('open'));
-    }
-});
-
-window.onload = renderCatalog;
-</script>
-</body>
-</html>
+    // Перенаправляем. Мобильный браузер перехватит эту ссылку и откроет меню «Переслать...
