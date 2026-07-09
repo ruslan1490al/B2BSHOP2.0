@@ -242,17 +242,11 @@ function sendOrder() {
     
     text += `💰 *ИТОГО К ОПЛАТЕ: ${total} ₸*`;
     
-    // Генерируем прямую мобильную команду для приложения WhatsApp
-    const mobileWhatsappUrl = `whatsapp://send?text=${encodeURIComponent(text)}`;
+    // Прямой вызов приложения WhatsApp (без номеров телефонов)
+    const whatsappLink = `whatsapp://send?text=${encodeURIComponent(text)}`;
     
-    // Создаем виртуальную прямую ссылку и кликаем по ней.
-    // Это заставит Android принудительно открыть само приложение WhatsApp, минуя меню копирования.
-    const link = document.createElement('a');
-    link.href = mobileWhatsappUrl;
-    link.setAttribute('target', '_blank');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    // Перенаправляем пользователя мгновенно без алертов и всплывающих окон
+    window.location.href = whatsappLink;
 }
 
 // Поиск
