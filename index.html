@@ -143,8 +143,6 @@ const catalogData = [
   }
 ];
 
-// Укажи здесь свой рабочий номер WhatsApp (в международном формате, без плюса)
-const WHATSAPP_NUMBER = ""; 
 const order = {};
 
 function renderCatalog() {
@@ -244,11 +242,22 @@ function sendOrder() {
     }
     
     text += `💰 *ИТОГО К ОПЛАТЕ: ${total} ₸*`;
-    const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank');
+    
+    // Новая надежная система: если телефон поддерживает системное шаринг-меню (Android/iOS)
+    if (navigator.share) {
+        navigator.share({
+            text: text
+        }).catch(err => {
+            // Если отменили или произошел сбой, отправляем стандартно без номера чата
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+        });
+    } else {
+        // Запасной вариант для старых ПК/браузеров
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+    }
 }
 
-// Полностью исправленный живой поиск без опечаток
+// Живой поиск
 document.getElementById('search').addEventListener('input', function(e) {
     const query = e.target.value.toLowerCase();
     const categories = document.querySelectorAll('.category');
