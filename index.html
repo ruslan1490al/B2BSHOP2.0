@@ -16,7 +16,7 @@
         .cart-btn-top { position: relative; padding: 10px; background-color: #312e81; border: none; border-radius: 12px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .badge { position: absolute; top: -5px; right: -5px; background-color: #10b981; color: white; font-size: 11px; font-weight: 900; border-radius: 9999px; min-width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; padding: 0 4px; }
         .search-box { margin-top: 16px; }
-        .search-box input { width: 100%; padding: 12px 16px; background-color: rgba(30, 27, 75, 0.4); border: 1px solid #4338ca; border-radius: 12px; font-size: 14px; color: white; outline: none; transition: border-color 0.2s; }
+        .search-box input { width: 100%; padding: 12px 16px; background-color: rgba(30, 27, 75, 0.4); border: 1px solid #4338ca; border-radius: 12px; font-size: 14px; color: white; outline: none; }
         .search-box input::placeholder { color: #a5b4fc; }
         main { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 12px; }
         .category-card { border: 1px solid #e5e7eb; border-radius: 14px; overflow: hidden; background-color: white; margin-bottom: 4px; }
@@ -50,184 +50,61 @@
     </style>
 </head>
 <body>
-
 <div id="app" class="app-container" v-cloak>
     <header>
         <div class="header-top">
-            <div>
-                <h1 class="header-title">Система заказов</h1>
-                <p class="header-subtitle">Актуальный прайс-лист продукции</p>
-            </div>
-            <button @click="showCart = true" class="cart-btn-top">
-                <svg style="width:24px; height:24px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-                <span v-if="cartCount > 0" class="badge">{{ cartCount }}</span>
-            </button>
+            <div><h1 class="header-title">Система заказов</h1><p class="header-subtitle">Актуальный прайс-лист продукции</p></div>
+            <button @click="showCart = true" class="cart-btn-top"><svg style="width:24px;height:24px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 11-4 0 2 2 0 014 0z"/></svg><span v-if="cartCount > 0" class="badge">{{ cartCount }}</span></button>
         </div>
-        <div class="search-box">
-            <input v-model="searchQuery" type="text" placeholder="Поиск товара или группы...">
-        </div>
+        <div class="search-box"><input v-model="searchQuery" type="text" placeholder="Поиск товара или группы..."></div>
     </header>
-
     <main>
         <div v-for="cat in filteredCatalog" :key="cat.category" class="category-card">
-            <div @click="toggleCategory(cat.category)" class="category-header">
-                <span>📁 {{ cat.category }}</span>
-                <span class="category-count">{{ cat.items.length }}</span>
-            </div>
+            <div @click="toggleCategory(cat.category)" class="category-header"><span>📁 {{ cat.category }}</span><span class="category-count">{{ cat.items.length }}</span></div>
             <div v-show="openedCategories.includes(cat.category) || searchQuery.length > 0" class="products-list">
                 <div v-for="product in cat.items" :key="product.id" class="product-item">
-                    <div style="flex: 1;">
-                        <div class="product-name">{{ product.name }}</div>
-                        <div class="product-price">{{ product.price }} ₸</div>
-                    </div>
+                    <div style="flex:1;"><div class="product-name">{{ product.name }}</div><div class="product-price">{{ product.price }} ₸</div></div>
                     <div>
-                        <div v-if="getCartQty(product.id) > 0" class="counter-group">
-                            <button @click="minusItem(product, cat.category)" class="btn-count">-</button>
-                            <span class="count-value">{{ getCartQty(product.id) }}</span>
-                            <button @click="plusItem(product, cat.category)" class="btn-count">+</button>
-                        </div>
+                        <div v-if="getCartQty(product.id) > 0" class="counter-group"><button @click="minusItem(product)" class="btn-count">-</button><span class="count-value">{{ getCartQty(product.id) }}</span><button @click="plusItem(product, cat.category)" class="btn-count">+</button></div>
                         <button v-else @click="plusItem(product, cat.category)" class="btn-add">Заказать</button>
                     </div>
                 </div>
             </div>
         </div>
     </main>
-
     <div v-if="showCart" class="modal-overlay">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">Ваш заказ</h2>
-                <button @click="showCart = false" class="btn-close">✕</button>
-            </div>
+            <div class="modal-header"><h2 class="modal-title">Ваш заказ</h2><button @click="showCart = false" class="btn-close">✕</button></div>
             <div class="modal-body">
                 <div v-if="cart.length === 0" class="cart-empty">В корзине пока ничего нет</div>
                 <div v-for="item in cart" :key="item.id" class="cart-item">
-                    <div style="flex: 1; padding-right: 8px;">
-                        <div class="cart-item-cat">{{ item.category }}</div>
-                        <div class="product-name" style="font-size:13px;">{{ item.name }}</div>
-                        <div style="font-size:12px; color:#6b7280; margin-top:2px;">{{ item.price }} ₸ × {{ item.qty }} шт</div>
-                    </div>
-                    <div class="counter-group">
-                        <button @click="minusItem(item, item.category)" class="btn-count" style="width:26px; height:26px;">-</button>
-                        <span class="count-value" style="font-size:13px;">{{ item.qty }}</span>
-                        <button @click="plusItem(item, item.category)" class="btn-count" style="width:26px; height:26px;">+</button>
-                    </div>
+                    <div style="flex:1;padding-right:8px;"><div class="cart-item-cat">{{ item.category }}</div><div class="product-name" style="font-size:13px;">{{ item.name }}</div><div style="font-size:12px;color:#6b7280;margin-top:2px;">{{ item.price }} ₸ × {{ item.qty }} шт</div></div>
+                    <div class="counter-group"><button @click="minusItem(item)" class="btn-count" style="width:26px;height:26px;">-</button><span class="count-value" style="font-size:13px;">{{ item.qty }}</span><button @click="plusItem(item, item.category)" class="btn-count" style="width:26px;height:26px;">+</button></div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <div style="display:flex; justify-content:space-between; align-items:baseline;">
-                    <span style="font-size:14px; font-weight:bold; color:#4b5563;">Итого к оплате:</span>
-                    <span style="font-size:24px; font-weight:900; color:#4338ca;">{{ cartTotal.toLocaleString() }} ₸</span>
-                </div>
-                <button @click="sendOrder" :disabled="cart.length === 0" class="btn-send">Отправить заказ в WhatsApp</button>
-            </div>
+            <div class="modal-footer"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-size:14px;font-weight:bold;color:#4b5563;">Итого к оплате:</span><span style="font-size:24px;font-weight:900;color:#4338ca;">{{ cartTotal.toLocaleString() }} ₸</span></div><button @click="sendOrder" :disabled="cart.length === 0" class="btn-send">Отправить заказ в WhatsApp</button></div>
         </div>
     </div>
-```html
+    <div class="footer-bar"><div><div class="total-title">Сумма заказа</div><div class="total-price">{{ cartTotal.toLocaleString() }} ₸</div></div><button @click="showCart = true" :disabled="cart.length === 0" class="btn-cart-open">Посмотреть корзину</button></div>
+</div>
 <script>
     const { createApp, ref, computed } = Vue;
     createApp({
         setup() {
-            const searchQuery = ref('');
-            const showCart = ref(false);
-            const openedCategories = ref([]);
-            const cart = ref([]);
+            const searchQuery = ref(''); const showCart = ref(false); const openedCategories = ref([]); const cart = ref([]);
             const catalog = ref([
-              {
-                "category": "Печенье сахарное",
-                "items": [
-                  {"id": 1, "name": "Печенье \"Восточное\" Коробка 4кг.", "price": 4030},
-                  {"id": 2, "name": "Печенье \"Восточное\" Пакет 0,5 кг. (0,5*20шт)", "price": 665},
-                  {"id": 3, "name": "Печенье \"Шоколадное\" Коробка 4кг.", "price": 5460},
-                  {"id": 4, "name": "Печенье \"Шоколадное\" Пакет 0,5кг.", "price": 735}
-                ]
-              },
-              {
-                "category": "Печенье Затяжное",
-                "items": [
-                  {"id": 5, "name": "Печенье \"Madlen\" Коробка 3 кг.", "price": 2965},
-                  {"id": 6, "name": "Печенье \"Madlen\" Пакет 0,5 кг. (0,5*16шт)", "price": 665},
-                  {"id": 7, "name": "Печенье \"Madlen\" с шоколадной глазурью Коррекс 0,3 кг.", "price": 510}
-                ]
-              },
-              {
-                "category": "Овсяное печенье",
-                "items": [
-                  {"id": 8, "name": "Печенье \"Овсяное\" Коробка 3кг.", "price": 3250}
-                ]
-              },
-              {
-                "category": "Печенье песочное",
-                "items": [
-                  {"id": 9, "name": "Печенье \"Домашнее\" Коробка 5,5кг.", "price": 5905}
-                ]
-              },
-              {
-                "category": "Печенье Крекер",
-                "items": [
-                  {"id": 10, "name": "Печенье \"Крекер сырный\" коробка 2 кг.", "price": 3250}
-                ]
-              },
-              {
-                "category": "Сахарное печенье",
-                "items": [
-                  {"id": 11, "name": "Печенье \"Любимое с темным шоколадом\"", "price": 1040},
-                  {"id": 12, "name": "Печенье \"Любимое с белым шоколадом\"", "price": 1040}
-                ]
-              },
-              {
-                "category": "Печенье Песочное",
-                "items": [
-                  {"id": 13, "name": "Печенье \"К Чаю Домашнее\" Пакет 0,5 кг.", "price": 715}
-                ]
-              },
-              {
-                "category": "Печенье шоколадное",
-                "items": [
-                  {"id": 15, "name": "Печенье \"Ziffy клубничный\" Коробка 0,31 кг.", "price": 1015},
-                  {"id": 16, "name": "Печенье \"Ziffy с кокосом\" Коробка 0,31 кг.", "price": 1015},
-                  {"id": 17, "name": "Печенье \"Ziffy шоколадный с кокосом\" Коробка 0,38 кг.", "price": 1185},
-                  {"id": 18, "name": "Печенье \"Ziffy\" Коробка 0,35 кг.", "price": 1120}
-                ]
-              },
-              {
-                "category": "Печенье сендвич",
-                "items": [
-                  {"id": 21, "name": "Печенье СЭНДВИЧ \"Choco Loco\" Коробка 8шт.", "price": 800},
-                  {"id": 23, "name": "Печенье \"Caramel Pie\" Коробка 1,3кг", "price": 3265}
-                ]
-              },
-              {
-                "category": "Конфеты",
-                "items": [
-                  {"id": 24, "name": "Конфеты мультизлаковые с белой глазурью", "price": 1250},
-                  {"id": 25, "name": "Конфеты мультизлаковые с белой глазурью и воздушным рисом", "price": 1250},
-                  {"id": 26, "name": "Конфеты мультизлаковые темной глазурью", "price": 1250},
-                  {"id": 40, "name": "Конфеты мультизлаковые с темной глазурью и воздушным рисом", "price": 1250},
-                  {"id": 27, "name": "Конфеты мультизлаковые АССОРТИ Упаковка 0,4кг", "price": 1250}
-                ]
-              },
-              {
-                "category": "Чак-Чак",
-                "items": [
-                  {"id": 28, "name": "Чак-Чак \"Медовый с миндалем\" Шоу Бокс 20 шт по 28 гр.", "price": 2340},
-                  {"id": 29, "name": "Чак-Чак Батончик \"Медовый с миндалем\" 28 гр.", "price": 120}
-                ]
-              },
-              {
-                "category": "Напитки",
-                "items": [
-                  {"id": 30, "name": "Напиток безалкогольный квас пастеризованный «Квас Белорусский оригинальный» 1,5 л", "price": 640},
-                  {"id": 31, "name": "Напиток безалкогольный квас пастеризованный «Квас Белорусский тёмный» 1,5 л", "price": 585},
-                  {"id": 32, "name": "Напиток безалкогольный квас пастеризованный «Квас деревенский на хлебной корочке» 1,5 л", "price": 690},
-                  {"id": 33, "name": "Напиток безалкогольный газированный «МОХИТО-МАЛИНА» ТМ «ОК» 1,5 л", "price": 645},
-                  {"id": 34, "name": "Напиток безалкогольный газированный «СО ВКУСОМ ЛИМОН-МЯТА» ТМ «БЕЛАКВА» 2 л", "price": 660},
-                  {"id": 35, "name": "Напиток безалкогольный газированный «СО ВКУСОМ КЛУБНИКА-ЛИМОН» ТМ «БЕЛАКВА» 2 л", "price": 660},
-                  {"id": 36, "name": "Напиток безалкогольный газированный «БЕЛАКВА MINERALS C AROMA» «ЛИМОН» 1,5 л", "price": 553},
-                  {"id": 37, "name": "Напиток безалкогольный газированный «ГРАНАТ» ТМ «БЕЛАКВА» 1,5 л", "price": 799},
-                  {"id": 38, "name": "Напиток безалкогольный газированный «ВКУС КЛЮКВЫ» ТМ «БЕЛАКВА» 1,5 л", "price": 650}
-                ]
-              }
+              {"category": "Печенье сахарное", "items": [{"id": 1, "name": "Печенье \"Восточное\" Коробка 4кг.", "price": 4030}, {"id": 2, "name": "Печенье \"Восточное\" Пакет 0,5 кг. (0,5*20шт)", "price": 665}, {"id": 3, "name": "Печенье \"Шоколадное\" Коробка 4кг.", "price": 5460}, {"id": 4, "name": "Печенье \"Шоколадное\" Пакет 0,5кг.", "price": 735}]},
+              {"category": "Печенье Затяжное", "items": [{"id": 5, "name": "Печенье \"Madlen\" Коробка 3 кг.", "price": 2965}, {"id": 6, "name": "Печенье \"Madlen\" Пакет 0,5 кг. (0,5*16шт)", "price": 665}, {"id": 7, "name": "Печенье \"Madlen\" с шоколадной глазурью Коррекс 0,3 кг.", "price": 510}]},
+              {"category": "Овсяное печенье", "items": [{"id": 8, "name": "Печенье \"Овсяное\" Коробка 3кг.", "price": 3250}]},
+              {"category": "Печенье песочное", "items": [{"id": 9, "name": "Печенье \"Домашнее\" Коробка 5,5кг.", "price": 5905}]},
+              {"category": "Печенье Крекер", "items": [{"id": 10, "name": "Печенье \"Крекер сырный\" коробка 2 кг.", "price": 3250}]},
+              {"category": "Сахарное печенье", "items": [{"id": 11, "name": "Печенье \"Любимое с темным шоколадом\"", "price": 1040}, {"id": 12, "name": "Печенье \"Любимое с белым шоколадом\"", "price": 1040}]},
+              {"category": "Печенье Песочное", "items": [{"id": 13, "name": "Печенье \"К Чаю Домашнее\" Пакет 0,5 кг.", "price": 715}]},
+              {"category": "Печенье шоколадное", "items": [{"id": 15, "name": "Печенье \"Ziffy клубничный\" Коробка 0,31 кг.", "price": 1015}, {"id": 16, "name": "Печенье \"Ziffy с кокосом\" Коробка 0,31 кг.", "price": 1015}, {"id": 17, "name": "Печенье \"Ziffy шоколадный с кокосом\" Коробка 0,38 кг.", "price": 1185}, {"id": 18, "name": "Печенье \"Ziffy\" Коробка 0,35 кг.", "price": 1120}]},
+              {"category": "Печенье сендвич", "items": [{"id": 21, "name": "Печенье СЭНДВИЧ \"Choco Loco\" Коробка 8шт.", "price": 800}, {"id": 23, "name": "Печенье \"Caramel Pie\" Коробка 1,3кг", "price": 3265}]},
+              {"category": "Чак-Чак", "items": [{"id": 28, "name": "Чак-Чак \"Медовый с миндалем\" Шоу Бокс 20 шт по 28 гр.", "price": 2340}, {"id": 29, "name": "Чак-Чак Батончик \"Медовый с миндалем\" 28 гр.", "price": 120}]}
+              ,{"category": "Конфеты", "items": [{"id": 24, "name": "Конфеты мультизлаковые с белой глазурью", "price": 1250}, {"id": 25, "name": "Конфеты мультизлаковые с белой глазурью и воздушным рисом", "price": 1250}, {"id": 26, "name": "Конфеты мультизлаковые темной глазурью", "price": 1250}, {"id": 40, "name": "Конфеты мультизлаковые с темной глазурью и воздушным рисом", "price": 1250}, {"id": 27, "name": "Конфеты мультизлаковые АССОРТИ Упаковка 0,4кг", "price": 1250}]},
+              {"category": "Напитки", "items": [{"id": 30, "name": "Напиток безалкогольный квас «Квас Белорусский оригинальный» 1,5 л", "price": 640}, {"id": 31, "name": "Напиток безалкогольный квас «Квас Белорусский тёмный» 1,5 л", "price": 585}, {"id": 32, "name": "Напиток безалкогольный квас «Квас деревенский на хлебной корочке» 1,5 л", "price": 690}, {"id": 33, "name": "Напиток безалкогольный газированный «МОХИТО-МАЛИНА» ТМ «ОК» 1,5 л", "price": 645}, {"id": 34, "name": "Напиток безалкогольный газированный «СО ВКУСОМ ЛИМОН-МЯТА» ТМ «БЕЛАКВА» 2 л", "price": 660}, {"id": 35, "name": "Напиток безалкогольный газированный «СО ВКУСОМ КЛУБНИКА-ЛИМОН» ТМ «БЕЛАКВА» 2 л", "price": 660}, {"id": 36, "name": "Напиток безалкогольный газированный «БЕЛАКВА MINERALS C AROMA» «ЛИМОН» 1,5 л", "price": 553}, {"id": 37, "name": "Напиток безалкогольный газированный «ГРАНАТ» ТМ «БЕЛАКВА» 1,5 л", "price": 799}, {"id": 38, "name": "Напиток безалкогольный газированный «ВКУС КЛЮКВЫ» ТМ «БЕЛАКВА» 1,5 л", "price": 650}]}
             ]);
             const filteredCatalog = computed(() => {
                 if (!searchQuery.value.trim()) return catalog.value;
@@ -239,41 +116,29 @@
                 }).filter(cat => cat.items.length > 0);
             });
             const toggleCategory = (category) => {
-                if (openedCategories.value.includes(category)) {
-                    openedCategories.value = openedCategories.value.filter(c => c !== category);
-                } else {
-                    openedCategories.value.push(category);
-                }
+                if (openedCategories.value.includes(category)) { openedCategories.value = openedCategories.value.filter(c => c !== category); }
+                else { openedCategories.value.push(category); }
             };
-            const getCartQty = (id) => {
-                const item = cart.value.find(i => i.id === id);
-                return item ? item.qty : 0;
-            };
+            const getCartQty = (id) => { const item = cart.value.find(i => i.id === id); return item ? item.qty : 0; };
             const plusItem = (product, category) => {
                 const item = cart.value.find(i => i.id === product.id);
-                if (item) item.qty++;
-                else cart.value.push({ ...product, category, qty: 1 });
+                if (item) item.qty++; else cart.value.push({ ...product, category, qty: 1 });
             };
             const minusItem = (product) => {
                 const item = cart.value.find(i => i.id === product.id);
-                if (item) {
-                    item.qty--;
-                    if (item.qty <= 0) cart.value = cart.value.filter(i => i.id !== product.id);
-                }
+                if (item) { item.qty--; if (item.qty <= 0) cart.value = cart.value.filter(i => i.id !== product.id); }
             };
             const cartCount = computed(() => cart.value.reduce((sum, item) => sum + item.qty, 0));
             const cartTotal = computed(() => cart.value.reduce((sum, item) => sum + (item.price * item.qty), 0));
             const sendOrder = () => {
-                let msg = "📝 *Новый оптовый заказ:*\n\n";
-                let currentCat = "";
+                let msg = "📝 *Новый оптовый заказ:*\n\n"; let currentCat = "";
                 cart.value.forEach(item => {
-                    if (currentCat !== item.category) {
-                        currentCat = item.category;
-                        msg += `\n📦 *${currentCat.toUpperCase()}*\n`;
-                    }
+                    if (currentCat !== item.category) { currentCat = item.category; msg += `\n📦 *${currentCat.toUpperCase()}*\n`; }
                     msg += `• ${item.name} — ${item.qty} шт. × ${item.price} ₸ (= ${item.price * item.qty} ₸)\n`;
                 });
                 msg += `\n💵 *ИТОГО К ОПЛАТЕ: ${cartTotal.value.toLocaleString()} ₸*`;
+                
+                // Вставьте ваш настоящий номер WhatsApp вместо 77011234567
                 const url = `https://whatsapp.com{encodeURIComponent(msg)}`;
                 window.open(url, '_blank');
             };
