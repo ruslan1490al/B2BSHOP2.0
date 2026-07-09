@@ -1,97 +1,116 @@
-[
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Прием заказов (Прайс)</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --accent-color: #25d366;
+            --text-color: #333;
+            --bg-color: #f4f6f9;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 100px; }
+        header { background-color: var(--primary-color); color: white; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1 { font-size: 1.4rem; margin-bottom: 10px; }
+        .search-box { width: 100%; max-width: 500px; padding: 10px; border: none; border-radius: 5px; font-size: 1rem; }
+        .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
+        .category { background: white; margin-bottom: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .category-title { background: #eef2f7; padding: 15px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+        .category-title::after { content: '▼'; font-size: 0.8rem; transition: transform 0.3s; }
+        .category.open .category-title::after { transform: rotate(180deg); }
+        .products-list { display: none; padding: 10px 0; }
+        .category.open .products-list { display: block; }
+        .product-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-bottom: 1px solid #edf2f7; }
+        .product-item:last-child { border-bottom: none; }
+        .product-info { flex: 1; padding-right: 10px; }
+        .product-name { font-size: 0.95rem; font-weight: 500; margin-bottom: 4px; }
+        .product-price { font-size: 0.9rem; color: #666; font-weight: bold; }
+        .counter { display: flex; align-items: center; border: 1px solid #cbd5e1; border-radius: 5px; overflow: hidden; }
+        .counter button { background: #f8fafc; border: none; width: 32px; height: 32px; font-size: 1.2rem; cursor: pointer; transition: background 0.2s; }
+        .counter button:hover { background: #e2e8f0; }
+        .counter input { width: 40px; height: 32px; text-align: center; border: none; border-left: 1px solid #cbd5e1; border-right: 1px solid #cbd5e1; font-size: 0.95rem; font-weight: bold; }
+        .footer-panel { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); z-index: 100; }
+        .total-box { font-size: 1.1rem; font-weight: bold; }
+        .total-box span { color: var(--primary-color); }
+        .order-btn { background-color: var(--accent-color); color: white; border: none; padding: 12px 25px; border-radius: 5px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: transform 0.2s; }
+        .order-btn:active { transform: scale(0.98); }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Прием заказов (Прайс)</h1>
+    <input type="text" id="search" class="search-box" placeholder="Поиск товара или группы...">
+</header>
+
+<div class="container" id="catalog"></div>
+
+<div class="footer-panel">
+    <div class="total-box">ИТОГО К ОПЛАТЕ: <span id="total-sum">0</span> ₸</div>
+    <button class="order-btn" onclick="sendOrder()">Отправить заказ</button>
+</div>
+
+<script>
+// Твой новый актуальный каталог товаров
+const catalogData = [
   {
-    "category": "Печенье сахарное",
-    "items": [
-      {"id": 1, "name": "Печенье \"Восточное\" Коробка 4кг.", "price": 4030},
-      {"id": 2, "name": "Печенье \"Восточное\" Пакет 0,5 кг. (0,5*20шт)", "price": 665},
-      {"id": 3, "name": "Печенье \"Шоколадное\" Коробка 4кг.", "price": 5460},
-      {"id": 4, "name": "Печенье \"Шоколадное\" Пакет 0,5кг.", "price": 735}
+    category: "Печенье сахарное",
+    items: [
+      { name: 'Печенье "Восточное" Коробка 4кг.', price: 4030 },
+      { name: 'Печенье "Восточное" Пакет 0,5 кг. (0,5*20шт)', price: 665 },
+      { name: 'Печенье "Шоколадное" Коробка 4кг.', price: 5460 },
+      { name: 'Печенье "Шоколадное" Пакет 0,5кг.', price: 735 },
+      { name: 'Печенье "Любимое с темным шоколадом"', price: 1040 },
+      { name: 'Печенье "Любимое с белым шоколадом"', price: 1040 }
     ]
   },
   {
-    "category": "Печенье Затяжное",
-    "items": [
-      {"id": 5, "name": "Печенье \"Madlen\" Коробка 3 кг.", "price": 2965},
-      {"id": 6, "name": "Печенье \"Madlen\" Пакет 0,5 кг. (0,5*16шт)", "price": 665},
-      {"id": 7, "name": "Печенье \"Madlen\" с шоколадной глазурью Коррекс 0,3 кг.", "price": 510}
+    category: "Печенье Затяжное",
+    items: [
+      { name: 'Печенье "Madlen" Коробка 3 кг.', price: 2965 },
+      { name: 'Печенье "Madlen" Пакет 0,5 кг. (0,5*16шт)', price: 665 },
+      { name: 'Печенье "Madlen с шоколадной глазурью" Коррекс 0,3 кг.', price: 510 }
     ]
   },
   {
-    "category": "Овсяное печенье",
-    "items": [
-      {"id": 8, "name": "Печенье \"Овсяное\" Коробка 3кг.", "price": 3250}
+    category: "Овсяное печенье",
+    items: [ { name: 'Печенье "Овсяное" Коробка 3кг.', price: 3250 } ]
+  },
+  {
+    category: "Печенье песочное",
+    items: [
+      { name: 'Печенье "Домашнее" Коробка 5,5кг.', price: 5905 },
+      { name: 'Печенье "К Чаю Домашнее" Пакет 0,5 кг.', price: 715 }
     ]
   },
   {
-    "category": "Печенье песочное",
-    "items": [
-      {"id": 9, "name": "Печенье \"Домашнее\" Коробка 5,5кг.", "price": 5905}
+    category: "Печенье Крекер",
+    items: [ { name: 'Печенье "Крекер сырный" коробка 2 кг.', price: 3250 } ]
+  },
+  {
+    category: "Печенье шоколадное",
+    items: [
+      { name: 'Печенье "Ziffy клубничный" Коробка 0,31 кг.', price: 1015 },
+      { name: 'Печенье "Ziffy с кокосом" Коробка 0,31 кг.', price: 1015 },
+      { name: 'Печенье "Ziffy шоколадный с кокосом" Коробка 0,38 кг.', price: 1185 },
+      { name: 'Печенье "Ziffy" Коробка 0,35 кг.', price: 1120 }
     ]
   },
   {
-    "category": "Печенье Крекер",
-    "items": [
-      {"id": 10, "name": "Печенье \"Крекер сырный\" коробка 2 кг.", "price": 3250}
-                ]
-              },
-              {
-    "category": "Сахарное печенье",
-    "items": [
-      {"id": 11, "name": "Печенье \"Любимое с темным шоколадом\"", "price": 1040},
-      {"id": 12, "name": "Печенье \"Любимое с белым шоколадом\"", "price": 1040}
+    category: "Печенье сэндвич",
+    items: [
+      { name: 'Печенье СЭНДВИЧ "Choco Loco" Коробка 8шт.', price: 800 },
+      { name: 'Печенье "Caramel Pie" Коробка 1,3кг', price: 3265 }
     ]
   },
   {
-    "category": "Печенье Песочное",
-    "items": [
-      {"id": 13, "name": "Печенье \"К Чаю Домашнее\" Пакет 0,5 кг.", "price": 715}
-    ]
-  },
-  {
-    "category": "Печенье шоколадное",
-    "items": [
-      {"id": 15, "name": "Печенье \"Ziffy клубничный\" Коробка 0,31 кг.", "price": 1015},
-      {"id": 16, "name": "Печенье \"Ziffy с кокосом\" Коробка 0,31 кг.", "price": 1015},
-      {"id": 17, "name": "Печенье \"Ziffy шоколадный с кокосом\" Коробка 0,38 кг.", "price": 1185},
-      {"id": 18, "name": "Печенье \"Ziffy\" Коробка 0,35 кг.", "price": 1120}
-    ]
-  },
-  {
-    "category": "Печенье сендвич",
-    "items": [
-      {"id": 21, "name": "Печенье СЭНДВИЧ \"Choco Loco\" Коробка 8шт.", "price": 800},
-      {"id": 23, "name": "Печенье \"Caramel Pie\" Коробка 1,3кг", "price": 3265}
-    ]
-  },
-  {
-    "category": "Конфеты",
-    "items": [
-      {"id": 24, "name": "Конфеты мультизлаковые с белой глазурью", "price": 1250},
-      {"id": 25, "name": "Конфеты мультизлаковые с белой глазурью и воздушным рисом", "price": 1250},
-      {"id": 26, "name": "Конфеты мультизлаковые темной глазурью", "price": 1250},
-      {"id": 40, "name": "Конфеты мультизлаковые с темной глазурью и воздушным рисом", "price": 1250},
-      {"id": 27, "name": "Конфеты мультизлаковые АССОРТИ Упаковка 0,4кг", "price": 1250}
-    ]
-  },
-  {
-    "category": "Чак-Чак",
-    "items": [
-      {"id": 28, "name": "Чак-Чак \"Медовый с миндалем\" Шоу Бокс 20 шт по 28 гр.", "price": 2340},
-      {"id": 29, "name": "Чак-Чак Батончик \"Медовый с миндалем\" 28 гр.", "price": 120}
-    ]
-  },
-  {
-    "category": "Напитки",
-    "items": [
-      {"id": 30, "name": "Напиток безалкогольный квас пастеризованный «Квас Белорусский оригинальный» 1,5 л", "price": 640},
-      {"id": 31, "name": "Напиток безалкогольный квас пастеризованный «Квас Белорусский тёмный» 1,5 л", "price": 585},
-      {"id": 32, "name": "Напиток безалкогольный квас пастеризованный «Квас деревенский на хлебной корочке» 1,5 л", "price": 690},
-      {"id": 33, "name": "Напиток безалкогольный газированный «МОХИТО-МАЛИНА» ТМ «ОК» 1,5 л", "price": 645},
-      {"id": 34, "name": "Напиток безалкогольный газированный «СО ВКУСОМ ЛИМОН-МЯТА» ТМ «БЕЛАКВА» 2 л", "price": 660},
-      {"id": 35, "name": "Напиток безалкогольный газированный «СО ВКУСОМ КЛУБНИКА-ЛИМОН» ТМ «БЕЛАКВА» 2 л", "price": 660},
-      {"id": 36, "name": "Напиток безалкогольный газированный «БЕЛАКВА MINERALS C AROMA» «ЛИМОН» 1,5 л", "price": 553},
-      {"id": 37, "name": "Напиток безалкогольный газированный «ГРАНАТ» ТМ «БЕЛАКВА» 1,5 л", "price": 799},
-      {"id": 38, "name": "Напиток безалкогольный газированный «ВКУС КЛЮКВЫ» ТМ «БЕЛАКВА» 1,5 л", "price": 650}
-    ]
-  }
-]
+    category: "Конфеты",
+    items: [
+      { name: "Конфеты мультизлаковые с белой глазурью", price: 1250 },
+      { name: "Конфеты мультизлаковые с белой глазурью и воздушным рисом", price: 1250 },
+      { name: "Конфеты мультизлаковые темной глазурью", price: 1250 },
+      { name: "Конфеты мультизлаковые с темной глазурью и воздушным рисом", price: 1250 },
+      { name: "Конфеты мульти
