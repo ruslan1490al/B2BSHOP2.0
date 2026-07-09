@@ -3,147 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Оптовый заказ товаров</title>
-    <script src="https://cloudflare.com"></script>
+    <title>Прием заказов (Прайс)</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        body { background-color: #f3f4f6; color: #1f2937; padding-bottom: 20px; }
-        .app-container { max-width: 450px; margin: 0 auto; background-color: #ffffff; min-height: 100vh; display: flex; flex-direction: column; position: relative; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
-        header { background-color: #1e1b4b; color: #ffffff; padding: 20px; position: sticky; top: 0; z-index: 40; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .header-top { display: flex; justify-content: space-between; align-items: center; }
-        .header-title { font-size: 20px; font-weight: 700; }
-        .header-subtitle { font-size: 12px; color: #c7d2fe; margin-top: 2px; }
-        .cart-btn-top { position: relative; padding: 10px; background-color: #312e81; border: none; border-radius: 12px; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .badge { position: absolute; top: -5px; right: -5px; background-color: #10b981; color: white; font-size: 11px; font-weight: 900; border-radius: 9999px; min-width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; padding: 0 4px; }
-        .search-box { margin-top: 16px; }
-        .search-box input { width: 100%; padding: 12px 16px; background-color: rgba(30, 27, 75, 0.4); border: 1px solid #4338ca; border-radius: 12px; font-size: 14px; color: white; outline: none; }
-        .search-box input::placeholder { color: #a5b4fc; }
-        main { padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 12px; }
-        .category-card { border: 1px solid #e5e7eb; border-radius: 14px; overflow: hidden; background-color: white; margin-bottom: 4px; }
-        .category-header { padding: 16px; background-color: #f9fafb; font-weight: 700; font-size: 14px; color: #1e1b4b; display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
-        .category-count { font-size: 12px; background-color: #e0e7ff; color: #4338ca; font-weight: 800; padding: 2px 10px; border-radius: 9999px; }
-        .products-list { padding: 0 12px; background-color: white; }
-        .product-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 4px; border-bottom: 1px solid #f3f4f6; gap: 12px; }
+        :root {
+            --primary-color: #4a6fa5;
+            --accent-color: #25d366;
+            --text-color: #333;
+            --bg-color: #f4f6f9;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 100px; }
+        header { background-color: var(--primary-color); color: white; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1 { font-size: 1.4rem; margin-bottom: 10px; }
+        .search-box { width: 100%; max-width: 500px; padding: 10px; border: none; border-radius: 5px; font-size: 1rem; }
+        .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
+        .category { background: white; margin-bottom: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .category-title { background: #eef2f7; padding: 15px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+        .category-title::after { content: '▼'; font-size: 0.8rem; transition: transform 0.3s; }
+        .category.open .category-title::after { transform: rotate(180deg); }
+        .products-list { display: none; padding: 10px 0; }
+        .category.open .products-list { display: block; }
+        .product-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-bottom: 1px solid #edf2f7; }
         .product-item:last-child { border-bottom: none; }
-        .product-name { font-size: 14px; font-weight: 600; color: #1f2937; line-height: 1.4; margin-bottom: 4px; }
-        .product-price { font-size: 14px; font-weight: 900; color: #4338ca; }
-        .btn-add { padding: 8px 14px; background-color: #eef2ff; color: #4338ca; border: none; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; }
-        .counter-group { display: flex; align-items: center; gap: 8px; }
-        .btn-count { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: #f3f4f6; border: none; border-radius: 8px; font-size: 16px; font-weight: 700; color: #4b5563; cursor: pointer; }
-        .count-value { font-size: 14px; font-weight: 700; min-width: 20px; text-align: center; }
-        .footer-bar { padding: 16px; border-top: 1px solid #f3f4f6; background-color: white; position: sticky; bottom: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; z-index: 30; box-shadow: 0 -4px 10px rgba(0,0,0,0.03); }
-        .total-title { font-size: 10px; text-transform: uppercase; font-weight: 700; color: #9ca3af; letter-spacing: 1px; }
-        .total-price { font-size: 20px; font-weight: 900; color: #111827; }
-        .btn-cart-open { padding: 12px 20px; background-color: #059669; color: white; border: none; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; }
-        .modal-overlay { position: fixed; inset: 0; background-color: rgba(0,0,0,0.5); z-index: 50; display: flex; justify-content: flex-end; }
-        .modal-content { width: 100%; max-width: 450px; background-color: white; height: 100%; display: flex; flex-direction: column; }
-        .modal-header { padding: 16px; background-color: #f9fafb; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
-        .modal-title { font-size: 18px; font-weight: 700; color: #111827; }
-        .btn-close { background: none; border: none; font-size: 20px; color: #9ca3af; cursor: pointer; }
-        .modal-body { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
-        .cart-empty { text-align: center; color: #9ca3af; margin-top: 48px; }
-        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f3f4f6; padding-bottom: 12px; }
-        .cart-item-cat { font-size: 9px; text-transform: uppercase; font-weight: 800; color: #818cf8; margin-bottom: 2px; }
-        .modal-footer { padding: 16px; border-top: 1px solid #e5e7eb; background-color: #f9fafb; display: flex; flex-direction: column; gap: 16px; }
-        .btn-send { width: 100%; padding: 14px; background-color: #059669; color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; text-align: center; cursor: pointer; }
-        [v-cloak] { display: none !important; }
+        .product-info { flex: 1; padding-right: 10px; }
+        .product-name { font-size: 0.95rem; font-weight: 500; margin-bottom: 4px; }
+        .product-price { font-size: 0.9rem; color: #666; font-weight: bold; }
+        .counter { display: flex; align-items: center; border: 1px solid #cbd5e1; border-radius: 5px; overflow: hidden; }
+        .counter button { background: #f8fafc; border: none; width: 32px; height: 32px; font-size: 1.2rem; cursor: pointer; }
+        .counter button:hover { background: #e2e8f0; }
+        .counter input { width: 45px; height: 32px; text-align: center; border: none; border-left: 1px solid #cbd5e1; border-right: 1px solid #cbd5e1; font-size: 0.95rem; font-weight: bold; }
+        .footer-panel { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); z-index: 100; }
+        .total-box { font-size: 1.1rem; font-weight: bold; }
+        .total-box span { color: var(--primary-color); }
+        .order-btn { background-color: var(--accent-color); color: white; border: none; padding: 12px 25px; border-radius: 5px; font-size: 1rem; font-weight: bold; cursor: pointer; transition: background 0.2s; }
+        .order-btn:hover { background-color: #20ba56; }
     </style>
 </head>
 <body>
-<div id="app" class="app-container" v-cloak>
-    <header>
-        <div class="header-top">
-            <div><h1 class="header-title">Система заказов</h1><p class="header-subtitle">Актуальный прайс-лист продукции</p></div>
-            <button @click="showCart = true" class="cart-btn-top"><svg style="width:24px;height:24px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 11-4 0 2 2 0 014 0z"/></svg><span v-if="cartCount > 0" class="badge">{{ cartCount }}</span></button>
-        </div>
-        <div class="search-box"><input v-model="searchQuery" type="text" placeholder="Поиск товара или группы..."></div>
-    </header>
-    <main>
-        <div v-for="cat in filteredCatalog" :key="cat.category" class="category-card">
-            <div @click="toggleCategory(cat.category)" class="category-header"><span>📁 {{ cat.category }}</span><span class="category-count">{{ cat.items.length }}</span></div>
-            <div v-show="openedCategories.includes(cat.category) || searchQuery.length > 0" class="products-list">
-                <div v-for="product in cat.items" :key="product.id" class="product-item">
-                    <div style="flex:1;"><div class="product-name">{{ product.name }}</div><div class="product-price">{{ product.price }} ₸</div></div>
-                    <div>
-                        <div v-if="getCartQty(product.id) > 0" class="counter-group"><button @click="minusItem(product)" class="btn-count">-</button><span class="count-value">{{ getCartQty(product.id) }}</span><button @click="plusItem(product, cat.category)" class="btn-count">+</button></div>
-                        <button v-else @click="plusItem(product, cat.category)" class="btn-add">Заказать</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-    <div v-if="showCart" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header"><h2 class="modal-title">Ваш заказ</h2><button @click="showCart = false" class="btn-close">✕</button></div>
-            <div class="modal-body">
-                <div v-if="cart.length === 0" class="cart-empty">В корзине пока ничего нет</div>
-                <div v-for="item in cart" :key="item.id" class="cart-item">
-                    <div style="flex:1;padding-right:8px;"><div class="cart-item-cat">{{ item.category }}</div><div class="product-name" style="font-size:13px;">{{ item.name }}</div><div style="font-size:12px;color:#6b7280;margin-top:2px;">{{ item.price }} ₸ × {{ item.qty }} шт</div></div>
-                    <div class="counter-group"><button @click="minusItem(item)" class="btn-count" style="width:26px;height:26px;">-</button><span class="count-value" style="font-size:13px;">{{ item.qty }}</span><button @click="plusItem(item, item.category)" class="btn-count" style="width:26px;height:26px;">+</button></div>
-                </div>
-            </div>
-            <div class="modal-footer"><div style="display:flex;justify-content:space-between;align-items:baseline;"><span style="font-size:14px;font-weight:bold;color:#4b5563;">Итого к оплате:</span><span style="font-size:24px;font-weight:900;color:#4338ca;">{{ cartTotal.toLocaleString() }} ₸</span></div><button @click="sendOrder" :disabled="cart.length === 0" class="btn-send">Отправить заказ в WhatsApp</button></div>
-        </div>
-    </div>
-    <div class="footer-bar"><div><div class="total-title">Сумма заказа</div><div class="total-price">{{ cartTotal.toLocaleString() }} ₸</div></div><button @click="showCart = true" :disabled="cart.length === 0" class="btn-cart-open">Посмотреть корзину</button></div>
+
+<header>
+    <h1>Прием заказов (Прайс)</h1>
+    <input type="text" id="search" class="search-box" placeholder="Поиск товара или группы...">
+</header>
+
+<div class="container" id="catalog"></div>
+
+<div class="footer-panel">
+    <div class="total-box">ИТОГО К ОПЛАТЕ: <span id="total-sum">0</span> ₸</div>
+    <button class="order-btn" onclick="sendOrder()">Отправить заказ</button>
 </div>
-    <script>
-    const { createApp, ref, computed } = Vue;
-    createApp({
-        setup() {
-            const searchQuery = ref(''); const showCart = ref(false); const openedCategories = ref([]); const cart = ref([]);
-            const catalog = ref([
-              {"category": "Печенье сахарное", "items": [{"id": 1, "name": "Печенье \"Восточное\" Коробка 4кг.", "price": 4030}, {"id": 2, "name": "Печенье \"Восточное\" Пакет 0,5 кг. (0,5*20шт)", "price": 665}, {"id": 3, "name": "Печенье \"Шоколадное\" Коробка 4кг.", "price": 5460}, {"id": 4, "name": "Печенье \"Шоколадное\" Пакет 0,5кг.", "price": 735}]},
-              {"category": "Печенье Затяжное", "items": [{"id": 5, "name": "Печенье \"Madlen\" Коробка 3 кг.", "price": 2965}, {"id": 6, "name": "Печенье \"Madlen\" Пакет 0,5 кг. (0,5*16шт)", "price": 665}, {"id": 7, "name": "Печенье \"Madlen\" с шоколадной глазурью Коррекс 0,3 кг.", "price": 510}]},
-              {"category": "Овсяное печенье", "items": [{"id": 8, "name": "Печенье \"Овсяное\" Коробка 3кг.", "price": 3250}]},
-              {"category": "Печенье песочное", "items": [{"id": 9, "name": "Печенье \"Домашнее\" Коробка 5,5кг.", "price": 5905}]},
-              {"category": "Печенье Крекер", "items": [{"id": 10, "name": "Печенье \"Крекер сырный\" коробка 2 кг.", "price": 3250}]},
-              {"category": "Сахарное печенье", "items": [{"id": 11, "name": "Печенье \"Любимое с темным шоколадом\"", "price": 1040}, {"id": 12, "name": "Печенье \"Любимое с белым шоколадом\"", "price": 1040}]},
-              {"category": "Печенье Песочное", "items": [{"id": 13, "name": "Печенье \"К Чаю Домашнее\" Пакет 0,5 кг.", "price": 715}]},
-              {"category": "Печенье шоколадное", "items": [{"id": 15, "name": "Печенье \"Ziffy клубничный\" Коробка 0,31 кг.", "price": 1015}, {"id": 16, "name": "Печенье \"Ziffy с кокосом\" Коробка 0,31 кг.", "price": 1015}, {"id": 17, "name": "Печенье \"Ziffy шоколадный с кокосом\" Коробка 0,38 кг.", "price": 1185}, {"id": 18, "name": "Печенье \"Ziffy\" Коробка 0,35 кг.", "price": 1120}]},
-              {"category": "Печенье сендвич", "items": [{"id": 21, "name": "Печенье СЭНДВИЧ \"Choco Loco\" Коробка 8шт.", "price": 800}, {"id": 23, "name": "Печенье \"Caramel Pie\" Коробка 1,3кг", "price": 3265}]},
-              {"category": "Чак-Чак", "items": [{"id": 28, "name": "Чак-Чак \"Медовый с миндалем\" Шоу Бокс 20 шт по 28 гр.", "price": 2340}, {"id": 29, "name": "Чак-Чак Батончик \"Медовый с миндалем\" 28 гр.", "price": 120}]},
-              {"category": "Конфеты", "items": [{"id": 24, "name": "Конфеты мультизлаковые с белой глазурью", "price": 1250}, {"id": 25, "name": "Конфеты мультизлаковые с белой глазурью и воздушным рисом", "price": 1250}, {"id": 26, "name": "Конфеты мультизлаковые темной глазурью", "price": 1250}, {"id": 40, "name": "Конфеты мультизлаковые с темной глазурью и воздушным рисом", "price": 1250}, {"id": 27, "name": "Конфеты мультизлаковые АССОРТИ Упаковка 0,4кг", "price": 1250}]},
-              {"category": "Напитки", "items": [{"id": 30, "name": "Напиток безалкогольный квас «Квас Белорусский оригинальный» 1,5 л", "price": 640}, {"id": 31, "name": "Напиток безалкогольный квас «Квас Белорусский тёмный» 1,5 л", "price": 585}, {"id": 32, "name": "Напиток безалкогольный квас «Квас деревенский на хлебной корочке» 1,5 л", "price": 690}, {"id": 33, "name": "Напиток безалкогольный газированный «МОХИТО-МАЛИНА» ТМ «ОК» 1,5 л", "price": 645}, {"id": 34, "name": "Напиток безалкогольный газированный «СО ВКУСОМ ЛИМОН-МЯТА» ТМ «БЕЛАКВА» 2 л", "price": 660}, {"id": 35, "name": "Напиток безалкогольный газированный «СО ВКУСОМ КЛУБНИКА-ЛИМОН» ТМ «БЕЛАКВА» 2 л", "price": 660}, {"id": 36, "name": "Напиток безалкогольный газированный «БЕЛАКВА MINERALS C AROMA» «ЛИМОН» 1,5 л", "price": 553}, {"id": 37, "name": "Напиток безалкогольный газированный «ГРАНАТ» ТМ «БЕЛАКВА» 1,5 л", "price": 799}, {"id": 38, "name": "Напиток безалкогольный газированный «ВКУС КЛЮКВЫ» ТМ «БЕЛАКВА» 1,5 л", "price": 650}]}
-            ]);
-            const filteredCatalog = computed(() => {
-                if (!searchQuery.value.trim()) return catalog.value;
-                const query = searchQuery.value.toLowerCase().trim();
-                return catalog.value.map(cat => {
-                    const isCatMatch = cat.category.toLowerCase().includes(query);
-                    const filteredItems = cat.items.filter(item => item.name.toLowerCase().includes(query));
-                    return { category: cat.category, items: isCatMatch ? cat.items : filteredItems };
-                }).filter(cat => cat.items.length > 0);
-            });
-            const toggleCategory = (category) => {
-                if (openedCategories.value.includes(category)) { openedCategories.value = openedCategories.value.filter(c => c !== category); }
-                else { openedCategories.value.push(category); }
-            };
-            const getCartQty = (id) => { const item = cart.value.find(i => i.id === id); return item ? item.qty : 0; };
-            const plusItem = (product, category) => {
-                const item = cart.value.find(i => i.id === product.id);
-                if (item) item.qty++; else cart.value.push({ ...product, category, qty: 1 });
-            };
-            const minusItem = (product) => {
-                const item = cart.value.find(i => i.id === product.id);
-                if (item) { item.qty--; if (item.qty <= 0) cart.value = cart.value.filter(i => i.id !== product.id); }
-            };
-            const cartCount = computed(() => cart.value.reduce((sum, item) => sum + item.qty, 0));
-            const cartTotal = computed(() => cart.value.reduce((sum, item) => sum + (item.price * item.qty), 0));
-            const sendOrder = () => {
-                let msg = "📝 *Новый оптовый заказ:*\n\n"; let currentCat = "";
-                cart.value.forEach(item => {
-                    if (currentCat !== item.category) { currentCat = item.category; msg += `\n📦 *${currentCat.toUpperCase()}*\n`; }
-                    msg += `• ${item.name} — ${item.qty} шт. × ${item.price} ₸ (= ${item.price * item.qty} ₸)\n`;
-                });
-                msg += `\n💵 *ИТОГО К ОПЛАТЕ: ${cartTotal.value.toLocaleString()} ₸*`;
-                const url = `https://whatsapp.com{encodeURIComponent(msg)}`;
-                window.open(url, '_blank');
-            };
-            return { searchQuery, showCart, openedCategories, filteredCatalog, toggleCategory, cart, getCartQty, plusItem, minusItem, cartCount, cartTotal, sendOrder };
+
+<script src="b2bprice"></script>
+
+<script>
+const WHATSAPP_NUMBER = "7XXXXXXXXXX"; // УКАЖИ ТУТ СВОЙ НОМЕР БЕЗ ЗНАКА "+"
+const order = {};
+
+function renderCatalog() {
+    const catalogDiv = document.getElementById('catalog');
+    catalogDiv.innerHTML = '';
+    
+    if (typeof catalogData === 'undefined') {
+        catalogDiv.innerHTML = '<p style="text-align:center; padding:20px; color:red;">Ошибка: Данные из файла b2bprice не загрузились!</p>';
+        return;
+    }
+    
+    catalogData.forEach((cat, catIdx) => {
+        const catDiv = document.createElement('div');
+        catDiv.className = 'category';
+        
+        const title = document.createElement('div');
+        title.className = 'category-title';
+        title.innerText = cat.category;
+        title.onclick = () => catDiv.classList.toggle('open');
+        catDiv.appendChild(title);
+        
+        const list = document.createElement('div');
+        list.className = 'products-list';
+        
+        cat.items.forEach(item => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'product-item';
+            itemDiv.dataset.name = item.name.toLowerCase();
+            
+            itemDiv.innerHTML = `
+                <div class="product-info">
+                    <div class="product-name">${item.name}</div>
+                    <div class="product-price">${item.price} ₸</div>
+                </div>
+                <div class="counter">
+                    <button onclick="changeQty('${item.name}', ${item.price}, -1)">-</button>
+                    <input type="number" id="qty-${item.name}" value="0" min="0" onchange="setQty('${item.name}', ${item.price}, this.value)">
+                    <button onclick="changeQty('${item.name}', ${item.price}, 1)">+</button>
+                </div>
+            `;
+            list.appendChild(itemDiv);
+        });
+        
+        catDiv.appendChild(list);
+        catalogDiv.appendChild(catDiv);
+    });
+}
+
+function changeQty(name, price, val) {
+    const input = document.getElementById(`qty-${name}`);
+    let current = parseInt(input.value) || 0;
+    current += val;
+    if (current < 0) current = 0;
+    input.value = current;
+    updateOrder(name, price, current);
+}
+
+function setQty(name, price, val) {
+    let current = parseInt(val) || 0;
+    if (current < 0) current = 0;
+    updateOrder(name, price, current);
+}
+
+function updateOrder(name, price, qty) {
+    if (qty > 0) {
+        order[name] = { price, qty };
+    } else {
+        delete order[name];
+    }
+    calculateTotal();
+}
+
+function calculateTotal() {
+    let total = 0;
+    for (const key in order) {
+        total += order[key].price * order[key].qty;
+    }
+    document.getElementById('total-sum').innerText = total;
+}
+
+function sendOrder() {
+    let text = "Привет! Мой заказ:\n\n";
+    let total = 0;
+    let hasItems = false;
+    
+    for (const name in order) {
+        hasItems = true;
+        const itemCost = order[name].price * order[name].qty;
+        text += `🔹 ${name}\nКол-во: ${order[name].qty} шт. на сумму ${itemCost} ₸\n\n`;
+        total += itemCost;
+    }
+    
+    if (!hasItems) {
+        alert("Пожалуйста, выберите хотя бы один товар!");
+        return;
+    }
+    
+    text += `ИТОГО: *${total} ₸*`;
+    const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+}
+
+// Поиск
+document.getElementById('search').addEventListener('input', function(e) {
+    const query = e.target.value.toLowerCase();
+    const categories = document.querySelectorAll('.category');
+    
+    categories.forEach(cat => {
+        let catHasVisible = false;
+        const items = cat.querySelectorAll('.product-item');
+        const catTitle = cat.querySelector('.category-title').innerText.toLowerCase();
+        
+        if (catTitle.includes(query)) {
+            items.forEach(i => i.style.display = 'flex');
+            cat.style.display = 'block';
+            if (query.length > 0) cat.classList.add('open');
+            return;
         }
-    }).mount('#app');
+        
+        items.forEach(item => {
+            const name = item.dataset.name;
+            if (name.includes(query)) {
+                item.style.display = 'flex';
+                catHasVisible = true;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        
+        if (catHasVisible) {
+            cat.style.display = 'block';
+            if (query.length > 0) cat.classList.add('open');
+        } else {
+            cat.style.display = 'none';
+            cat.classList.remove('open');
+        }
+    });
+    
+    if (query.length === 0) {
+        categories.forEach(cat => cat.classList.remove('open'));
+    }
+});
+
+window.onload = renderCatalog;
 </script>
 </body>
 </html>
-
