@@ -242,7 +242,61 @@ function sendOrder() {
     
     text += `💰 *ИТОГО К ОПЛАТЕ: ${total} ₸*`;
     
-    // Чистая универсальная ссылка без какого-либо номера телефона
-    const cleanUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`;
+    // Генерируем прямую мобильную команду для приложения WhatsApp
+    const mobileWhatsappUrl = `whatsapp://send?text=${encodeURIComponent(text)}`;
     
-    // Перенаправляем. Мобильный браузер перехватит эту ссылку и откроет меню «Переслать...
+    // Создаем виртуальную прямую ссылку и кликаем по ней.
+    // Это заставит Android принудительно открыть само приложение WhatsApp, минуя меню копирования.
+    const link = document.createElement('a');
+    link.href = mobileWhatsappUrl;
+    link.setAttribute('target', '_blank');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Поиск
+document.getElementById('search').addEventListener('input', function(e) {
+    const query = e.target.value.toLowerCase();
+    const categories = document.querySelectorAll('.category');
+    
+    categories.forEach(cat => {
+        let catHasVisible = false;
+        const items = cat.querySelectorAll('.product-item');
+        const catTitle = cat.querySelector('.category-title').innerText.toLowerCase();
+        
+        if (catTitle.includes(query)) {
+            items.forEach(i => i.style.display = 'flex');
+            cat.style.display = 'block';
+            if (query.length > 0) cat.classList.add('open');
+            return;
+        }
+        
+        items.forEach(item => {
+            const name = item.dataset.name;
+            if (name.includes(query)) {
+                item.style.display = 'flex';
+                catHasVisible = true;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        
+        if (catHasVisible) {
+            cat.style.display = 'block';
+            if (query.length > 0) cat.classList.add('open');
+        } else {
+            cat.style.display = 'none';
+            cat.classList.remove('open');
+        }
+    });
+    
+    if (query.length === 0) {
+        categories.forEach(cat => cat.classList.remove('open'));
+    }
+});
+
+window.onload = renderCatalog;
+</script>
+</body>
+</html>
