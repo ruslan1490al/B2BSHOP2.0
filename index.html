@@ -54,7 +54,7 @@
 </div>
 
 <script>
-// Все твои товары находятся прямо здесь — сайт загрузится моментально!
+// Каталог товаров
 const catalogData = [
   {
     category: "Печенье сахарное",
@@ -169,121 +169,16 @@ function renderCatalog() {
             itemDiv.className = 'product-item';
             itemDiv.dataset.name = item.name.toLowerCase();
             
+            // Заменяем кавычки для безопасной передачи в ID и функции
+            const safeName = item.name.replace(/"/g, '&quot;').replace(/'/g, "\\'");
+            const inputId = `qty-${item.name.replace(/[^a-zA-Z0-9а-яА-Я]/g, '')}`;
+            
             itemDiv.innerHTML = `
                 <div class="product-info">
                     <div class="product-name">${item.name}</div>
                     <div class="product-price">${item.price} ₸</div>
                 </div>
                 <div class="counter">
-                    <button onclick="changeQty('${item.name}', ${item.price}, -1)">-</button>
-                    <input type="number" id="qty-${item.name}" value="0" min="0" onchange="setQty('${item.name}', ${item.price}, this.value)">
-                    <button onclick="changeQty('${item.name}', ${item.price}, 1)">+</button>
-                </div>
-            `;
-            list.appendChild(itemDiv);
-        });
-        
-        catDiv.appendChild(list);
-        catalogDiv.appendChild(catDiv);
-    });
-}
-
-function changeQty(name, price, val) {
-    const input = document.getElementById(`qty-${name}`);
-    let current = parseInt(input.value) || 0;
-    current += val;
-    if (current < 0) current = 0;
-    input.value = current;
-    updateOrder(name, price, current);
-}
-
-function setQty(name, price, val) {
-    let current = parseInt(val) || 0;
-    if (current < 0) current = 0;
-    updateOrder(name, price, current);
-}
-
-function updateOrder(name, price, qty) {
-    if (qty > 0) {
-        order[name] = { price, qty };
-    } else {
-        delete order[name];
-    }
-    calculateTotal();
-}
-
-function calculateTotal() {
-    let total = 0;
-    for (const key in order) {
-        total += order[key].price * order[key].qty;
-    }
-    document.getElementById('total-sum').innerText = total;
-}
-
-function sendOrder() {
-    let text = "🛒 *Новый заказ из прайса:*\n\n";
-    let total = 0;
-    let hasItems = false;
-    
-    for (const name in order) {
-        hasItems = true;
-        const itemCost = order[name].price * order[name].qty;
-        text += `🔹 ${name}\nКол-во: *${order[name].qty} шт.* на сумму ${itemCost} ₸\n\n`;
-        total += itemCost;
-    }
-    
-    if (!hasItems) {
-        alert("Пожалуйста, выберите количество для товара!");
-        return;
-    }
-    
-    text += `💰 *ИТОГО К ОПЛАТЕ: ${total} ₸*`;
-    const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(text)}`;
-    window.open(url, '_blank');
-}
-
-// Поиск по сайту
-document.getElementById('search').addEventListener('input', function(e) {
-    const query = e.target.value.toLowerCase();
-    const categories = document.querySelectorAll('.category');
-    
-    categories.forEach(cat => {
-        let catHasVisible = false;
-        const items = cat.querySelectorAll('.product-item');
-        const catTitle = cat.querySelector('.category-title').innerText.toLowerCase();
-        
-        if (catTitle.includes(query)) {
-            items.forEach(i => i.style.display = 'flex');
-            cat.style.style.display = 'block';
-            if (query.length > 0) cat.classList.add('open');
-            return;
-        }
-        
-        items.forEach(item => {
-            const name = item.dataset.name;
-            if (name.includes(query)) {
-                item.style.display = 'flex';
-                catHasVisible = true;
-            } else {
-                item.style.display = 'none';
-            }
-        });
-        
-        if (catHasVisible) {
-            cat.style.display = 'block';
-            if (query.length > 0) cat.classList.add('open');
-        } else {
-            cat.style.display = 'none';
-            cat.classList.remove('open');
-        }
-    });
-    
-    if (query.length === 0) {
-        categories.forEach(cat => cat.classList.remove('open'));
-    }
-});
-
-window.onload = renderCatalog;
-</script>
-</body>
-</html>
+                    <button onclick="changeQty('${safeName}', ${item.price}, -1, '${inputId}')">-</button>
+                    <input type="number" id="${inputId}" value="0" min="0" oninput="setQty('${safeName}', ${item.price}, this.value)">
+                    <button onclick="changeQty('${safeName}', ${item.price}, 1, '${inputId}')">+</button
