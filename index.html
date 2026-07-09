@@ -11,11 +11,11 @@
             --text-color: #333;
             --bg-color: #f4f6f9;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 100px; }
         header { background-color: var(--primary-color); color: white; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         h1 { font-size: 1.4rem; margin-bottom: 10px; }
-        .search-box { width: 100%; max-width: 500px; padding: 10px; border: none; border-radius: 5px; font-size: 1rem; }
+        .search-box { width: 100%; max-width: 500px; padding: 10px; border: none; border-radius: 5px; font-size: 1rem; outline: none; }
         .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
         .category { background: white; margin-bottom: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .category-title { background: #eef2f7; padding: 15px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
@@ -26,12 +26,12 @@
         .product-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-bottom: 1px solid #edf2f7; }
         .product-item:last-child { border-bottom: none; }
         .product-info { flex: 1; padding-right: 10px; }
-        .product-name { font-size: 0.95rem; font-weight: 500; margin-bottom: 4px; }
+        .product-name { font-size: 0.95rem; font-weight: 500; margin-bottom: 4px; line-height: 1.3; }
         .product-price { font-size: 0.9rem; color: #666; font-weight: bold; }
-        .counter { display: flex; align-items: center; border: 1px solid #cbd5e1; border-radius: 5px; overflow: hidden; }
-        .counter button { background: #f8fafc; border: none; width: 32px; height: 32px; font-size: 1.2rem; cursor: pointer; }
+        .counter { display: flex; align-items: center; border: 1px solid #cbd5e1; border-radius: 5px; overflow: hidden; background: #fff; }
+        .counter button { background: #f8fafc; border: none; width: 36px; height: 36px; font-size: 1.2rem; cursor: pointer; user-select: none; }
         .counter button:hover { background: #e2e8f0; }
-        .counter input { width: 45px; height: 32px; text-align: center; border: none; border-left: 1px solid #cbd5e1; border-right: 1px solid #cbd5e1; font-size: 0.95rem; font-weight: bold; }
+        .counter input { width: 45px; height: 36px; text-align: center; border: none; border-left: 1px solid #cbd5e1; border-right: 1px solid #cbd5e1; font-size: 0.95rem; font-weight: bold; -webkit-appearance: none; margin: 0; }
         .footer-panel { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); z-index: 100; }
         .total-box { font-size: 1.1rem; font-weight: bold; }
         .total-box span { color: var(--primary-color); }
@@ -53,20 +53,103 @@
     <button class="order-btn" onclick="sendOrder()">Отправить заказ</button>
 </div>
 
-<script src="b2bprice"></script>
-
 <script>
-const WHATSAPP_NUMBER = "7XXXXXXXXXX"; // УКАЖИ ТУТ СВОЙ НОМЕР БЕЗ ЗНАКА "+"
+// Все твои товары находятся прямо здесь — сайт загрузится моментально!
+const catalogData = [
+  {
+    category: "Печенье сахарное",
+    items: [
+      { name: 'Печенье "Восточное" Коробка 4кг.', price: 4030 },
+      { name: 'Печенье "Восточное" Пакет 0,5 кг. (0,5*20шт)', price: 665 },
+      { name: 'Печенье "Шоколадное" Коробка 4кг.', price: 5460 },
+      { name: 'Печенье "Шоколадное" Пакет 0,5кг.', price: 735 },
+      { name: 'Печенье "Любимое с темным шоколадом"', price: 1040 },
+      { name: 'Печенье "Любимое с белым шоколадом"', price: 1040 }
+    ]
+  },
+  {
+    category: "Печенье Затяжное",
+    items: [
+      { name: 'Печенье "Madlen" Коробка 3 кг.', price: 2965 },
+      { name: 'Печенье "Madlen" Пакет 0,5 кг. (0,5*16шт)', price: 665 },
+      { name: 'Печенье "Madlen с шоколадной глазурью" Коррекс 0,3 кг.', price: 510 }
+    ]
+  },
+  {
+    category: "Овсяное печенье",
+    items: [
+      { name: 'Печенье "Овсяное" Коробка 3кг.', price: 3250 }
+    ]
+  },
+  {
+    category: "Печенье песочное",
+    items: [
+      { name: 'Печенье "Домашнее" Коробка 5,5кг.', price: 5905 },
+      { name: 'Печенье "К Чаю Домашнее" Пакет 0,5 кг.', price: 715 }
+    ]
+  },
+  {
+    category: "Печенье Крекер",
+    items: [
+      { name: 'Печенье "Крекер сырный" коробка 2 кг.', price: 3250 }
+    ]
+  },
+  {
+    category: "Печенье шоколадное",
+    items: [
+      { name: 'Печенье "Ziffy клубничный" Коробка 0,31 кг.', price: 1015 },
+      { name: 'Печенье "Ziffy с кокосом" Коробка 0,31 кг.', price: 1015 },
+      { name: 'Печенье "Ziffy шоколадный с кокосом" Коробка 0,38 кг.', price: 1185 },
+      { name: 'Печенье "Ziffy" Коробка 0,35 кг.', price: 1120 }
+    ]
+  },
+  {
+    category: "Печенье сэндвич",
+    items: [
+      { name: 'Печенье СЭНДВИЧ "Choco Loco" Коробка 8шт.', price: 800 },
+      { name: 'Печенье "Caramel Pie" Коробка 1,3кг', price: 3265 }
+    ]
+  },
+  {
+    category: "Конфеты",
+    items: [
+      { name: "Конфеты мультизлаковые с белой глазурью", price: 1250 },
+      { name: "Конфеты мультизлаковые с белой глазурью и воздушным рисом", price: 1250 },
+      { name: "Конфеты мультизлаковые темной глазурью", price: 1250 },
+      { name: "Конфеты мультизлаковые с темной глазурью и воздушным рисом", price: 1250 },
+      { name: "Конфеты мультизлаковые АССОРТИ Упаковка 0,4кг", price: 1250 }
+    ]
+  },
+  {
+    category: "Чак-Чак",
+    items: [
+      { name: 'Чак-Чак "Медовый с миндалём" Шоу Бокс 20 шт по 28 гр.', price: 2340 },
+      { name: 'Чак-Чак Батончик "Медовый с миндалём" 28 гр.', price: 120 }
+    ]
+  },
+  {
+    category: "Напитки",
+    items: [
+      { name: "Напиток безалкогольный квас пастеризованный фильтрованный «Квас Белорусский оригинальный» 1,5 л", price: 3840 },
+      { name: "Напиток безалкогольный квас пастеризованный фильтрованный «Квас Белорусский тёмный» 1,5 л", price: 3510 },
+      { name: "Напиток безалкогольный квас пастеризованный фильтрованный «Квас деревенский на хлебной корочке» 1,5 л", price: 4140 },
+      { name: "Напиток безалкогольный газированный непастеризованный на ароматах «МОХИТО-МАЛИНА» ТМ «ОК» 1,5 л", price: 3870 },
+      { name: "Напиток безалкогольный газированный непастеризованный на подсластителях «СО ВКУСОМ ЛИМОН-МЯТА» ТМ «БЕЛАКВА» 2 л", price: 3960 },
+      { name: "Напиток безалкогольный газированный непастеризованный на подсластителях «СО ВКУСОМ КЛУБНИКА-ЛИМОН» ТМ «БЕЛАКВА» 2 л", price: 3960 },
+      { name: "Напиток безалкогольный газированный непастеризованный на основе минеральной воды «БЕЛАКВА MINERALS C AROMA» «ЛИМОН» 1,5 л", price: 3318 },
+      { name: "Напиток безалкогольный газированный непастеризованный на ароматах «ГРАНАТ» ТМ «БЕЛАКВА» 1,5 л", price: 4794 },
+      { name: "Напиток безалкогольный газированный непастеризованный на ароматах «ВКУС КЛЮКВЫ» ТМ «БЕЛАКВА» 1,5 л", price: 3900 }
+    ]
+  }
+];
+
+// Укажи здесь свой рабочий номер WhatsApp (в международном формате, без плюса)
+const WHATSAPP_NUMBER = "77051234567"; 
 const order = {};
 
 function renderCatalog() {
     const catalogDiv = document.getElementById('catalog');
     catalogDiv.innerHTML = '';
-    
-    if (typeof catalogData === 'undefined') {
-        catalogDiv.innerHTML = '<p style="text-align:center; padding:20px; color:red;">Ошибка: Данные из файла b2bprice не загрузились!</p>';
-        return;
-    }
     
     catalogData.forEach((cat, catIdx) => {
         const catDiv = document.createElement('div');
@@ -138,28 +221,28 @@ function calculateTotal() {
 }
 
 function sendOrder() {
-    let text = "Привет! Мой заказ:\n\n";
+    let text = "🛒 *Новый заказ из прайса:*\n\n";
     let total = 0;
     let hasItems = false;
     
     for (const name in order) {
         hasItems = true;
         const itemCost = order[name].price * order[name].qty;
-        text += `🔹 ${name}\nКол-во: ${order[name].qty} шт. на сумму ${itemCost} ₸\n\n`;
+        text += `🔹 ${name}\nКол-во: *${order[name].qty} шт.* на сумму ${itemCost} ₸\n\n`;
         total += itemCost;
     }
     
     if (!hasItems) {
-        alert("Пожалуйста, выберите хотя бы один товар!");
+        alert("Пожалуйста, выберите количество для товара!");
         return;
     }
     
-    text += `ИТОГО: *${total} ₸*`;
+    text += `💰 *ИТОГО К ОПЛАТЕ: ${total} ₸*`;
     const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
 }
 
-// Поиск
+// Поиск по сайту
 document.getElementById('search').addEventListener('input', function(e) {
     const query = e.target.value.toLowerCase();
     const categories = document.querySelectorAll('.category');
@@ -171,7 +254,7 @@ document.getElementById('search').addEventListener('input', function(e) {
         
         if (catTitle.includes(query)) {
             items.forEach(i => i.style.display = 'flex');
-            cat.style.display = 'block';
+            cat.style.style.display = 'block';
             if (query.length > 0) cat.classList.add('open');
             return;
         }
