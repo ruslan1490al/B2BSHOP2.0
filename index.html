@@ -29,9 +29,9 @@
         .product-name { font-size: 0.95rem; font-weight: 500; margin-bottom: 4px; line-height: 1.3; }
         .product-price { font-size: 0.9rem; color: #666; font-weight: bold; }
         .counter { display: flex; align-items: center; border: 1px solid #cbd5e1; border-radius: 5px; overflow: hidden; background: #fff; }
-        .counter button { background: #f8fafc; border: none; width: 36px; height: 36px; font-size: 1.2rem; cursor: pointer; user-select: none; }
+        .counter button { background: #f8fafc; border: none; width: 40px; height: 40px; font-size: 1.3rem; cursor: pointer; user-select: none; font-weight: bold; }
         .counter button:hover { background: #e2e8f0; }
-        .counter input { width: 45px; height: 36px; text-align: center; border: none; border-left: 1px solid #cbd5e1; border-right: 1px solid #cbd5e1; font-size: 0.95rem; font-weight: bold; -webkit-appearance: none; margin: 0; }
+        .counter input { width: 50px; height: 40px; text-align: center; border: none; border-left: 1px solid #cbd5e1; border-right: 1px solid #cbd5e1; font-size: 1rem; font-weight: bold; margin: 0; }
         .footer-panel { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); z-index: 100; }
         .total-box { font-size: 1.1rem; font-weight: bold; }
         .total-box span { color: var(--primary-color); }
@@ -164,14 +164,12 @@ function renderCatalog() {
         const list = document.createElement('div');
         list.className = 'products-list';
         
-        cat.items.forEach(item => {
+        cat.items.forEach((item, itemIdx) => {
             const itemDiv = document.createElement('div');
             itemDiv.className = 'product-item';
             itemDiv.dataset.name = item.name.toLowerCase();
             
-            // Заменяем кавычки для безопасной передачи в ID и функции
-            const safeName = item.name.replace(/"/g, '&quot;').replace(/'/g, "\\'");
-            const inputId = `qty-${item.name.replace(/[^a-zA-Z0-9а-яА-Я]/g, '')}`;
+            const inputId = `qty-${catIdx}-${itemIdx}`;
             
             itemDiv.innerHTML = `
                 <div class="product-info">
@@ -179,6 +177,119 @@ function renderCatalog() {
                     <div class="product-price">${item.price} ₸</div>
                 </div>
                 <div class="counter">
-                    <button onclick="changeQty('${safeName}', ${item.price}, -1, '${inputId}')">-</button>
-                    <input type="number" id="${inputId}" value="0" min="0" oninput="setQty('${safeName}', ${item.price}, this.value)">
-                    <button onclick="changeQty('${safeName}', ${item.price}, 1, '${inputId}')">+</button
+                    <button onclick="changeQty(${catIdx}, ${itemIdx}, -1)">&minus;</button>
+                    <input type="number" id="${inputId}" value="0" min="0" oninput="setQty(${catIdx}, ${itemIdx}, this.value)">
+                    <button onclick="changeQty(${catIdx}, ${itemIdx}, 1)">&plus;</button>
+                </div>
+            `;
+            list.appendChild(itemDiv);
+        });
+        
+        catDiv.appendChild(list);
+        catalogDiv.appendChild(catDiv);
+    });
+}
+
+function changeQty(catIdx, itemIdx, val) {
+    const input = document.getElementById(`qty-${catIdx}-${itemIdx}`);
+    let current = parseInt(input.value) || 0;
+    current += val;
+    if (current < 0) current = 0;
+    input.value = current;
+    
+    const item = catalogData[catIdx].items[itemIdx];
+    updateOrder(item.name, item.price, current);
+}
+
+function setQty(catIdx, itemIdx, val) {
+    let current = parseInt(val) || 0;
+    if (current < 0) current = 0;
+    
+    const item = catalogData[catIdx].items[itemIdx];
+    updateOrder(item.name, item.price, current);
+}
+
+function updateOrder(name, price, qty) {
+    if (qty > 0) {
+        order[name] = { price, qty };
+    } else {
+        delete order[name];
+    }
+    calculateTotal();
+}
+
+function calculateTotal() {
+    let total = 0;
+    for (const key in order) {
+        total += order[key].price * order[key].qty;
+    }
+    document.getElementById('total-sum').innerText = total;
+}
+
+function sendOrder() {
+    let text = "🛒 *Новый заказ из прайса:*\n\n";
+    let total = 0;
+    let hasItems = false;
+    
+    for (const name in order) {
+        hasItems = true;
+        const itemCost = order[name].price * order[name].qty;
+        text += `🔹 ${name}\nКол-во: *${order[name].qty} шт.* на сумму ${itemCost} ₸\n\n`;
+        total += itemCost;
+    }
+    
+    if (!hasItems) {
+        alert("Пожалуйста, выберите количество для товара!");
+        return;
+    }
+    
+    text += `💰 *ИТОГО К ОПЛАТЕ: ${total} ₸*`;
+    const url = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank');
+}
+
+// Поиск по сайту (без ошибок)
+document.getElementById('search').addEventListener('input', function(e) {
+    const query = e.target.value.toLowerCase();
+    const categories = document.querySelectorAll('.category');
+    
+    categories.forEach(cat => {
+        let catHasVisible = false;
+        const items = cat.querySelectorAll('.product-item');
+        const catTitle = cat.querySelector('.category-title').innerText.toLowerCase();
+        
+        if (catTitle.includes(query)) {
+            items.forEach(i => i.style.display = 'flex');
+            cat.style.display = 'block';
+            if (query.length > 0) cat.classList.add('open');
+            return;
+        }
+        
+        items.forEach(item => {
+            const name = item.dataset.name;
+            if (name.includes(query)) {
+                item.style.display = 'flex';
+                catHasVisible = true;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        
+        if (catHasVisible) {
+            cat.style.display = 'block';
+            if (query.length > 0) cat.classList.add('open');
+        } else {
+            cat.style.display = 'none';
+            cat.classList.remove('open');
+        }
+    });
+    
+    if (query.length === 0) {
+        categories.forEach(cat => cat.classList.remove('open'));
+    }
+});
+
+window.onload = renderCatalog;
+</script>
+</body>
+</html>
