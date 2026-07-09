@@ -54,7 +54,7 @@
 </div>
 
 <script>
-// Каталог товаров
+// Твой каталог товаров
 const catalogData = [
   {
     category: "Печенье сахарное",
@@ -248,7 +248,7 @@ function sendOrder() {
     window.open(url, '_blank');
 }
 
-// Поиск по сайту (без ошибок)
+// Полностью исправленный живой поиск без опечаток
 document.getElementById('search').addEventListener('input', function(e) {
     const query = e.target.value.toLowerCase();
     const categories = document.querySelectorAll('.category');
