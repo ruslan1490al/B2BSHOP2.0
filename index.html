@@ -13,9 +13,24 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 120px; }
-        header { background-color: var(--primary-color); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        h1 { font-size: 1.3rem; margin-bottom: 8px; }
-        .search-box { width: 100%; max-width: 500px; padding: 10px; border: none; border-radius: 5px; font-size: 0.95rem; }
+        
+        /* Шапка с фоновой картинкой */
+        header { 
+            background-color: var(--primary-color); /* Резервный цвет, пока грузится фото */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('header-bg.jpg'); /* Укажите путь к картинке */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white; 
+            padding: 20px 15px; 
+            text-align: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2); 
+        }
+        h1 { font-size: 1.3rem; margin-bottom: 10px; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+        .search-box { width: 100%; max-width: 500px; padding: 10px; border: none; border-radius: 5px; font-size: 0.95rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .container { max-width: 600px; margin: 15px auto; padding: 0 15px; }
         
         .client-info-card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
@@ -56,7 +71,6 @@
 </header>
 
 <div class="container">
-    <!-- Поля для торгового представителя -->
     <div class="client-info-card">
         <h2>Информация о торговой точке</h2>
         <div class="form-group">
@@ -69,7 +83,6 @@
         </div>
     </div>
 
-    <!-- Каталог -->
     <div id="catalog"></div>
 </div>
 
@@ -79,7 +92,6 @@
 </div>
 
 <script>
-// Каталог товаров по вашей Excel-структуре
 const catalogData = [
   {
     category: "Сахарное печенье",
@@ -148,7 +160,6 @@ const catalogData = [
   }
 ];
 
-// Рендер каталога
 function renderCatalog() {
     const catalogContainer = document.getElementById('catalog');
     catalogContainer.innerHTML = '';
@@ -205,7 +216,6 @@ function recalcTotal() {
     document.getElementById('total-sum').innerText = total.toLocaleString('ru-RU');
 }
 
-// Поиск
 document.getElementById('search').addEventListener('input', function(e) {
     const text = e.target.value.toLowerCase().trim();
     document.querySelectorAll('.category').forEach(cat => {
@@ -234,7 +244,6 @@ document.getElementById('search').addEventListener('input', function(e) {
     });
 });
 
-// Отправка заказа в WhatsApp
 function sendOrder() {
     const storeName = document.getElementById('store-name').value.trim();
     const storeAddress = document.getElementById('store-address').value.trim();
