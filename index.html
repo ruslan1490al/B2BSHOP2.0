@@ -176,6 +176,10 @@ const catalogData = [
   }
 ];
 
+function escapeHtml(str) {
+    return str.replace(/"/g, '&quot;');
+}
+
 function renderCatalog() {
     const catalogContainer = document.getElementById('catalog');
     catalogContainer.innerHTML = '';
@@ -187,6 +191,7 @@ function renderCatalog() {
         let itemsHTML = '';
         cat.items.forEach((item, itemIdx) => {
             const inputId = `item-${catIdx}-${itemIdx}`;
+            const safeName = escapeHtml(item.name);
             itemsHTML += `
                 <div class="product-item">
                     <div class="product-info">
@@ -195,7 +200,7 @@ function renderCatalog() {
                     </div>
                     <div class="counter">
                         <button onclick="changeQty('${inputId}', -1)">-</button>
-                        <input type="number" id="${inputId}" value="0" min="0" data-name="${item.name}" data-price="${item.price}" onchange="recalcTotal()">
+                        <input type="number" id="${inputId}" value="0" min="0" data-name="${safeName}" data-price="${item.price}" onchange="recalcTotal()">
                         <button onclick="changeQty('${inputId}', 1)">+</button>
                     </div>
                 </div>
