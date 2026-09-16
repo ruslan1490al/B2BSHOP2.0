@@ -1,62 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Прием заказов (Прайс)</title>
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --accent-color: #25d366;
+            --text-color: #333;
+            --bg-color: #f4f6f9;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 100px; }
+        header { background-color: var(--primary-color); color: white; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1 { font-size: 1.4rem; margin-bottom: 10px; }
+        .search-box { width: 100%; max-width: 500px; padding: 10px; border: none; border-radius: 5px; font-size: 1rem; }
+        .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
+        .category { background: white; margin-bottom: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .category-title { background: #eef2f7; padding: 15px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+        .category-title::after { content: '▼'; font-size: 0.8rem; transition: transform 0.3s; }
+        .category.open .category-title::after { transform: rotate(180deg); }
+        .products-list { display: none; padding: 10px 0; }
+        .category.open .products-list { display: block; }
+        .product-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 15px; border-bottom: 1px solid #edf2f7; }
+        .product-item:last-child { border-bottom: none; }
+        .product-info { flex: 1; padding-right: 10px; }
+        .product-name { font-size: 0.95rem; font-weight: 500; margin-bottom: 4px; }
+        .product-price { font-size: 0.9rem; color: #666; font-weight: bold; }
+        .counter { display: flex; align-items: center; border: 1px solid #cbd5e1; border-radius: 5px; overflow: hidden; }
+        .counter button { background: #f8fafc; border: none; width: 32px; height: 32px; font-size: 1.2rem; cursor: pointer; transition: background 0.2s; }
+        .counter button:hover { background: #e2e8f0; }
+        .counter input { width: 40px; height: 32px; text-align: center; border: none; border-left: 1px solid #cbd5e1; border-right: 1px solid #cbd5e1; font-size: 0.95rem; font-weight: bold; }
+        .footer-panel { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); z-index: 100; }
+        .total-box { font-size: 1.1rem; font-weight: bold; }
+        .total-box span { color: var(--primary-color); }
+        .order-btn { background-color: var(--accent-color); color: white; border: none; padding: 12px 25px; border-radius: 5px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: transform 0.2s; }
+        .order-btn:active { transform: scale(0.98); }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Прием заказов (Прайс)</h1>
+    <input type="text" id="search" class="search-box" placeholder="Поиск товара или группы...">
+</header>
+
+<div class="container" id="catalog"></div>
+
+<div class="footer-panel">
+    <div class="total-box">ИТОГО К ОПЛАТЕ: <span id="total-sum">0</span> ₸</div>
+    <button class="order-btn" onclick="sendOrder()">Отправить заказ</button>
+</div>
+
+<script>
+// Твой актуальный каталог товаров
 const catalogData = [
   {
-    category: "Печенье сахарное",
+    category: "Конфеты мультизлаковые",
     items: [
-      { name: 'Печенье "Восточное" Коробка 4кг.', price: 4030 },
-      { name: 'Печенье "Восточное" Пакет 0,5 кг. (0,5*20шт)', price: 665 },
-      { name: 'Печенье "Шоколадное" Коробка 4кг.', price: 5460 },
-      { name: 'Печенье "Шоколадное" Пакет 0,5кг.', price: 735 },
-      { name: 'Печенье "Любимое с темным шоколадом"', price: 1040 },
-      { name: 'Печенье "Любимое с белым шоколадом"', price: 1040 }
+      { name: "Конфеты мультизлаковые АССОРТИ Упаковка 0,4 кг.", price: 1250 },
+      { name: "Конфеты мультизлаковые с белой глазурью (фасовка 0,4кг) (Ж)", price: 1250 },
+      { name: "Конфеты мультизлаковые с белой глазурью и воздушным рисом (фасовка 0,4кг) (З)", price: 1250 },
+      { name: "Конфеты мультизлаковые с темной глазурью (фасовка 0,4кг) (С)", price: 1250 },
+      { name: "Конфеты мультизлаковые с темной глазурью и воздушным рисом (фасовка 0,4кг) (К)", price: 1250 }
     ]
   },
   {
-    category: "Печенье Затяжное",
+    category: "Печенье и кондитерские изделия",
     items: [
+      { name: 'Печенье "Caramel Pie" Коробка 1,3кг.', price: 3265 },
+      { name: 'Печенье "Choco Loco" Коробка 12 шт. (0,360 кг.)', price: 1200 },
+      { name: 'Печенье "Choco Loco" Коробка 8 шт. (0,240 кг.)', price: 800 },
+      { name: 'Печенье "Choco Loco" Шоу бокс 22 шт. по 0,66 кг.', price: 2005 },
       { name: 'Печенье "Madlen" Коробка 3 кг.', price: 2965 },
-      { name: 'Печенье "Madlen" Пакет 0,5 кг. (0,5*16шт)', price: 665 },
-      { name: 'Печенье "Madlen с шоколадной глазурью" Коррекс 0,3 кг.', price: 510 }
-    ]
-  },
-  {
-    category: "Овсяное печенье",
-    items: [ { name: 'Печенье "Овсяное" Коробка 3кг.', price: 3250 } ]
-  },
-  {
-    category: "Печенье песочное",
-    items: [
-      { name: 'Печенье "Домашнее" Коробка 5,5кг.', price: 5905 },
-      { name: 'Печенье "К Чаю Домашнее" Пакет 0,5 кг.', price: 715 }
-    ]
-  },
-  {
-    category: "Печенье Крекер",
-    items: [ { name: 'Печенье "Крекер сырный" коробка 2 кг.', price: 3250 } ]
-  },
-  {
-    category: "Печенье шоколадное",
-    items: [
+      { name: 'Печенье "Madlen" Пакет 0,5 кг.', price: 665 },
       { name: 'Печенье "Ziffy клубничный" Коробка 0,31 кг.', price: 1015 },
       { name: 'Печенье "Ziffy с кокосом" Коробка 0,31 кг.', price: 1015 },
       { name: 'Печенье "Ziffy шоколадный с кокосом" Коробка 0,38 кг.', price: 1185 },
-      { name: 'Печенье "Ziffy" Коробка 0,35 кг.', price: 1120 }
-    ]
-  },
-  {
-    category: "Печенье сэндвич",
-    items: [
-      { name: 'Печенье СЭНДВИЧ "Choco Loco" Коробка 8шт.', price: 800 },
-      { name: 'Печенье "Caramel Pie" Коробка 1,3кг', price: 3265 }
-    ]
-  },
-  {
-    category: "Конфеты",
-    items: [
-      { name: "Конфеты мультизлаковые с белой глазурью", price: 1250 },
-      { name: "Конфеты мультизлаковые с белой глазурью и воздушным рисом", price: 1250 },
-      { name: "Конфеты мультизлаковые темной глазурью", price: 1250 },
-      { name: "Конфеты мультизлаковые с темной глазурью и воздушным рисом", price: 1250 },
-      { name: "Конфеты мультизлаковые АССОРТИ Упаковка 0,4кг", price: 1250 }
+      { name: 'Печенье "Ziffy" Коробка 0,35 кг.', price: 1120 },
+      { name: 'Печенье "К Чаю Восточное" Коробка 4кг.', price: 4030 },
+      { name: 'Печенье "К Чаю Восточное" Пакет 0,5кг.', price: 665 },
+      { name: 'Печенье "К Чаю Домашнее" Коробка 5,5кг.', price: 5905 },
+      { name: 'Печенье "К Чаю Домашнее" Пакет 0,5 кг.', price: 715 },
+      { name: 'Печенье "К Чаю Шоколадное" Коробка 4кг.', price: 5460 },
+      { name: 'Печенье "Крекер сырный" Коррекс 0,75 кг.', price: 1225 },
+      { name: 'Печенье "Любимое с белым шоколадом" Коробка 0,46 кг.', price: 1040 },
+      { name: 'Печенье "Любимое с темным шоколадом" Коробка 0,46 кг.', price: 1040 },
+      { name: 'Печенье "Овсяное" Коробка 3кг.', price: 3250 }
     ]
   },
   {
@@ -67,7 +98,7 @@ const catalogData = [
     ]
   },
   {
-    category: "Напитки",
+    category: "Напитки Белорусские",
     items: [
       { name: "Напиток безалкогольный квас пастеризованный «Квас Белорусский оригинальный» 1,5 л", price: 3840 },
       { name: "Напиток безалкогольный квас пастеризованный «Квас Белорусский тёмный» 1,5 л", price: 3510 },
@@ -81,3 +112,124 @@ const catalogData = [
     ]
   }
 ];
+
+// Рендер каталога
+function renderCatalog() {
+    const catalogContainer = document.getElementById('catalog');
+    catalogContainer.innerHTML = '';
+
+    catalogData.forEach((cat, catIdx) => {
+        const catDiv = document.createElement('div');
+        catDiv.className = 'category';
+        
+        let itemsHTML = '';
+        cat.items.forEach((item, itemIdx) => {
+            const inputId = `item-${catIdx}-${itemIdx}`;
+            itemsHTML += `
+                <div class="product-item">
+                    <div class="product-info">
+                        <div class="product-name">${item.name}</div>
+                        <div class="product-price">${item.price} ₸</div>
+                    </div>
+                    <div class="counter">
+                        <button onclick="changeQty('${inputId}', -1)">-</button>
+                        <input type="number" id="${inputId}" value="0" min="0" data-name="${item.name}" data-price="${item.price}" onchange="recalcTotal()">
+                        <button onclick="changeQty('${inputId}', 1)">+</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        catDiv.innerHTML = `
+            <div class="category-title" onclick="toggleCategory(this)">${cat.category}</div>
+            <div class="products-list">${itemsHTML}</div>
+        `;
+        catalogContainer.appendChild(catDiv);
+    });
+}
+
+function toggleCategory(el) {
+    el.parentElement.classList.toggle('open');
+}
+
+function changeQty(id, delta) {
+    const input = document.getElementById(id);
+    let val = parseInt(input.value) || 0;
+    val = Math.max(0, val + delta);
+    input.value = val;
+    recalcTotal();
+}
+
+function recalcTotal() {
+    let total = 0;
+    document.querySelectorAll('.counter input').forEach(input => {
+        const qty = parseInt(input.value) || 0;
+        const price = parseFloat(input.getAttribute('data-price')) || 0;
+        total += qty * price;
+    });
+    document.getElementById('total-sum').innerText = total.toLocaleString('ru-RU');
+}
+
+// Поиск
+document.getElementById('search').addEventListener('input', function(e) {
+    const text = e.target.value.toLowerCase().trim();
+    document.querySelectorAll('.category').forEach(cat => {
+        let hasVisible = false;
+        cat.querySelectorAll('.product-item').forEach(item => {
+            const name = item.querySelector('.product-name').innerText.toLowerCase();
+            if (name.includes(text)) {
+                item.style.display = 'flex';
+                hasVisible = true;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+        if (text !== '') {
+            if (hasVisible) {
+                cat.style.display = 'block';
+                cat.classList.add('open');
+            } else {
+                cat.style.display = 'none';
+            }
+        } else {
+            cat.style.display = 'block';
+            cat.classList.remove('open');
+            cat.querySelectorAll('.product-item').forEach(item => item.style.display = 'flex');
+        }
+    });
+});
+
+// Отправка заказа в WhatsApp
+function sendOrder() {
+    let message = "📦 *НОВЫЙ ЗАКАЗ*\n\n";
+    let hasItems = false;
+    let total = 0;
+
+    document.querySelectorAll('.counter input').forEach(input => {
+        const qty = parseInt(input.value) || 0;
+        if (qty > 0) {
+            hasItems = true;
+            const name = input.getAttribute('data-name');
+            const price = parseFloat(input.getAttribute('data-price'));
+            const sum = qty * price;
+            total += sum;
+            message += `• *${name}*\n   ${qty} шт x ${price} ₸ = ${sum} ₸\n`;
+        }
+    });
+
+    if (!hasItems) {
+        alert("Выберите хотя бы один товар!");
+        return;
+    }
+
+    message += `\n💰 *ИТОГО:* ${total.toLocaleString('ru-RU')} ₸`;
+
+    const encodedMsg = encodeURIComponent(message);
+    window.open(`https://wa.me/?text=${encodedMsg}`, '_blank');
+}
+
+renderCatalog();
+</script>
+
+</body>
+</html>
