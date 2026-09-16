@@ -12,11 +12,20 @@
             --bg-color: #f4f6f9;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 100px; }
-        header { background-color: var(--primary-color); color: white; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        h1 { font-size: 1.4rem; margin-bottom: 10px; }
-        .search-box { width: 100%; max-width: 500px; padding: 10px; border: none; border-radius: 5px; font-size: 1rem; }
-        .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
+        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 120px; }
+        header { background-color: var(--primary-color); color: white; padding: 15px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1 { font-size: 1.3rem; margin-bottom: 8px; }
+        .search-box { width: 100%; max-width: 500px; padding: 10px; border: none; border-radius: 5px; font-size: 0.95rem; }
+        .container { max-width: 600px; margin: 15px auto; padding: 0 15px; }
+        
+        .client-info-card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .client-info-card h2 { font-size: 1rem; color: var(--primary-color); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group { margin-bottom: 10px; }
+        .form-group:last-child { margin-bottom: 0; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 4px; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 5px; font-size: 0.95rem; }
+        .form-group input:focus { outline: none; border-color: var(--primary-color); }
+
         .category { background: white; margin-bottom: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .category-title { background: #eef2f7; padding: 15px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
         .category-title::after { content: '▼'; font-size: 0.8rem; transition: transform 0.3s; }
@@ -33,9 +42,9 @@
         .counter button:hover { background: #e2e8f0; }
         .counter input { width: 40px; height: 32px; text-align: center; border: none; border-left: 1px solid #cbd5e1; border-right: 1px solid #cbd5e1; font-size: 0.95rem; font-weight: bold; }
         .footer-panel { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); z-index: 100; }
-        .total-box { font-size: 1.1rem; font-weight: bold; }
+        .total-box { font-size: 1.05rem; font-weight: bold; }
         .total-box span { color: var(--primary-color); }
-        .order-btn { background-color: var(--accent-color); color: white; border: none; padding: 12px 25px; border-radius: 5px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: transform 0.2s; }
+        .order-btn { background-color: var(--accent-color); color: white; border: none; padding: 12px 20px; border-radius: 5px; font-size: 0.95rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: transform 0.2s; }
         .order-btn:active { transform: scale(0.98); }
     </style>
 </head>
@@ -46,15 +55,31 @@
     <input type="text" id="search" class="search-box" placeholder="Поиск товара или группы...">
 </header>
 
-<div class="container" id="catalog"></div>
+<div class="container">
+    <!-- Поля для торгового представителя -->
+    <div class="client-info-card">
+        <h2>Информация о торговой точке</h2>
+        <div class="form-group">
+            <label for="store-name">ИП / Название магазина *</label>
+            <input type="text" id="store-name" placeholder="Например: ИП Поднебесный / Магазин «Алтын»">
+        </div>
+        <div class="form-group">
+            <label for="store-address">Адрес торговой точки *</label>
+            <input type="text" id="store-address" placeholder="Например: ул. Мира, 45">
+        </div>
+    </div>
+
+    <!-- Каталог -->
+    <div id="catalog"></div>
+</div>
 
 <div class="footer-panel">
-    <div class="total-box">ИТОГО К ОПЛАТЕ: <span id="total-sum">0</span> ₸</div>
+    <div class="total-box">ИТОГО: <span id="total-sum">0</span> ₸</div>
     <button class="order-btn" onclick="sendOrder()">Отправить заказ</button>
 </div>
 
 <script>
-// Каталог товаров по вашей новой Excel-структуре
+// Каталог товаров по вашей Excel-структуре
 const catalogData = [
   {
     category: "Сахарное печенье",
@@ -211,9 +236,24 @@ document.getElementById('search').addEventListener('input', function(e) {
 
 // Отправка заказа в WhatsApp
 function sendOrder() {
-    let message = "📦 *НОВЫЙ ЗАКАЗ*\n\n";
+    const storeName = document.getElementById('store-name').value.trim();
+    const storeAddress = document.getElementById('store-address').value.trim();
+
+    if (!storeName) {
+        alert("Пожалуйста, укажите ИП / Название магазина!");
+        document.getElementById('store-name').focus();
+        return;
+    }
+
+    if (!storeAddress) {
+        alert("Пожалуйста, укажите адрес торговой точки!");
+        document.getElementById('store-address').focus();
+        return;
+    }
+
     let hasItems = false;
     let total = 0;
+    let itemsText = "";
 
     document.querySelectorAll('.counter input').forEach(input => {
         const qty = parseInt(input.value) || 0;
@@ -223,7 +263,7 @@ function sendOrder() {
             const price = parseFloat(input.getAttribute('data-price'));
             const sum = qty * price;
             total += sum;
-            message += `• *${name}*\n   ${qty} шт x ${price} ₸ = ${sum} ₸\n`;
+            itemsText += `• *${name}*\n   ${qty} шт x ${price} ₸ = ${sum} ₸\n`;
         }
     });
 
@@ -232,7 +272,13 @@ function sendOrder() {
         return;
     }
 
-    message += `\n💰 *ИТОГО:* ${total.toLocaleString('ru-RU')} ₸`;
+    let message = `📦 *НОВЫЙ ЗАКАЗ*\n\n`;
+    message += `🏪 *Клиент:* ${storeName}\n`;
+    message += `📍 *Адрес:* ${storeAddress}\n\n`;
+    message += `------------------------------\n`;
+    message += itemsText;
+    message += `------------------------------\n`;
+    message += `💰 *ИТОГО К ОПЛАТЕ:* ${total.toLocaleString('ru-RU')} ₸`;
 
     const encodedMsg = encodeURIComponent(message);
     window.open(`https://wa.me/?text=${encodedMsg}`, '_blank');
