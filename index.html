@@ -68,6 +68,49 @@
         }
 
         .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
+
+        /* Блок данных клиента */
+        .client-info-card {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+            border-left: 5px solid var(--primary-red);
+        }
+        .client-info-card h3 {
+            font-size: 1rem;
+            color: var(--primary-red);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .input-group {
+            margin-bottom: 10px;
+        }
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #444;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .input-group input:focus {
+            border-color: var(--primary-red);
+        }
         
         /* Категории */
         .category { 
@@ -191,7 +234,23 @@
     <input type="text" id="search" class="search-box" placeholder="Поиск товара или группы...">
 </header>
 
-<div class="container" id="catalog"></div>
+<div class="container">
+    <!-- Блок ввода данных клиента -->
+    <div class="client-info-card">
+        <h3>Информация о заказчике</h3>
+        <div class="input-group">
+            <label for="client-ip">ИП:</label>
+            <input type="text" id="client-ip" placeholder="Введите наименование ИП">
+        </div>
+        <div class="input-group">
+            <label for="client-address">Адрес доставки / название магазина:</label>
+            <input type="text" id="client-address" placeholder="Улица, дом, название магазина">
+        </div>
+    </div>
+
+    <!-- Каталог товаров -->
+    <div id="catalog"></div>
+</div>
 
 <div class="footer-panel">
     <div class="total-box">ИТОГО: <span id="total-sum">0</span> ₸</div>
@@ -357,7 +416,26 @@ document.getElementById('search').addEventListener('input', function(e) {
 
 // Отправка заказа в WhatsApp
 function sendOrder() {
+    const ipVal = document.getElementById('client-ip').value.trim();
+    const addressVal = document.getElementById('client-address').value.trim();
+
+    if (!ipVal) {
+        alert("Пожалуйста, укажите ИП!");
+        document.getElementById('client-ip').focus();
+        return;
+    }
+
+    if (!addressVal) {
+        alert("Пожалуйста, укажите адрес доставки / название магазина!");
+        document.getElementById('client-address').focus();
+        return;
+    }
+
     let message = "📦 *НОВЫЙ ЗАКАЗ (Madlen Fabrica)*\n\n";
+    message += `👤 *ИП:* ${ipVal}\n`;
+    message += `📍 *Адрес / Магазин:* ${addressVal}\n\n`;
+    message += "📋 *СОСТАВ ЗАКАЗА:*\n";
+
     let hasItems = false;
     let total = 0;
 
