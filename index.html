@@ -258,72 +258,72 @@
 </div>
 
 <script>
-// Прайс-лист по вашей таблице
+// Прайс-лист
 const catalogData = [
   {
     category: "Сахарное печенье",
     items: [
-      { name: 'Печенье "К Чаю Восточное" Коробка 4кг.', price: 4995 },
-      { name: 'Печенье "К Чаю Восточное" Пакет 0,5кг.', price: 755 },
-      { name: 'Печенье "К Чаю Шоколадное" Коробка 4кг.', price: 6370 },
-      { name: 'Печенье "К Чаю Шоколадное" Пакет 0,5кг.', price: 855 },
-      { name: 'Печенье "Любимое с белым шоколадом" Коробка 0,46 кг.', price: 1190 },
-      { name: 'Печенье "Любимое с темным шоколадом" Коробка 0,46 кг.', price: 1190 },
-      { name: 'Печенье "Артемон" Коробка 1,5 кг.', price: 3210 }
+      { name: "Печенье К Чаю Восточное Коробка 4кг.", price: 4995 },
+      { name: "Печенье К Чаю Восточное Пакет 0,5кг.", price: 755 },
+      { name: "Печенье К Чаю Шоколадное Коробка 4кг.", price: 6370 },
+      { name: "Печенье К Чаю Шоколадное Пакет 0,5кг.", price: 855 },
+      { name: "Печенье Любимое с белым шоколадом Коробка 0,46 кг.", price: 1190 },
+      { name: "Печенье Любимое с темным шоколадом Коробка 0,46 кг.", price: 1190 },
+      { name: "Печенье Артемон Коробка 1,5 кг.", price: 3210 }
     ]
   },
   {
     category: "Песочное печенье",
     items: [
-      { name: 'Печенье "К Чаю Домашнее" Коробка 5,5кг.', price: 5905 },
-      { name: 'Печенье "К Чаю Домашнее" Пакет 0,5 кг.', price: 795 },
-      { name: 'Печенье "Овсяное" Коробка 3кг.', price: 3690 }
+      { name: "Печенье К Чаю Домашнее Коробка 5,5кг.", price: 5905 },
+      { name: "Печенье К Чаю Домашнее Пакет 0,5 кг.", price: 795 },
+      { name: "Печенье Овсяное Коробка 3кг.", price: 3690 }
     ]
   },
   {
     category: "Затяжное печенье",
     items: [
-      { name: 'Печенье "Madlen" Коробка 3 кг.', price: 3445 },
-      { name: 'Печенье "Madlen" Пакет 0,5 кг.', price: 710 }
+      { name: "Печенье Madlen Коробка 3 кг.", price: 3445 },
+      { name: "Печенье Madlen Пакет 0,5 кг.", price: 710 }
     ]
   },
   {
     category: "Печенье крекер",
     items: [
-      { name: 'Печенье "Крекер сырный" Коррекс 0,75 кг.', price: 1415 }
+      { name: "Печенье Крекер сырный Коррекс 0,75 кг.", price: 1415 }
     ]
   },
   {
     category: "Воздушный десерт ZIFFY",
     items: [
-      { name: 'Печенье "Ziffy клубничный" Коробка 0,31 кг.', price: 1140 },
-      { name: 'Печенье "Ziffy с кокосом" Коробка 0,31 кг.', price: 1140 },
-      { name: 'Печенье "Ziffy шоколадный с кокосом" Коробка 0,38 кг.', price: 1335 },
-      { name: 'Печенье "Ziffy" Коробка 0,35 кг.', price: 1255 }
+      { name: "Печенье Ziffy клубничный Коробка 0,31 кг.", price: 1140 },
+      { name: "Печенье Ziffy с кокосом Коробка 0,31 кг.", price: 1140 },
+      { name: "Печенье Ziffy шоколадный с кокосом Коробка 0,38 кг.", price: 1335 },
+      { name: "Печенье Ziffy Коробка 0,35 кг.", price: 1255 }
     ]
   },
   {
     category: "Печенье сэндвич",
     items: [
-      { name: 'Печенье "Choco Loco" Коробка 12 шт. (0,360 кг.)', price: 1295 },
-      { name: 'Печенье "Choco Loco" Коробка 8 шт. (0,240 кг.)', price: 920 },
-      { name: 'Печенье "Choco Loco" Шоу бокс 22 шт. по 0,66 кг.', price: 2220 }
+      { name: "Печенье Choco Loco Коробка 12 шт. (0,360 кг.)", price: 1295 },
+      { name: "Печенье Choco Loco Коробка 8 шт. (0,240 кг.)", price: 920 },
+      { name: "Печенье Choco Loco Шоу бокс 22 шт. по 0,66 кг.", price: 2220 }
     ]
   },
   {
     category: "Мультизлаковые конфеты",
     items: [
-      { name: 'Конфеты мультизлаковые АССОРТИ Упаковка 0,4 кг.', price: 1370 },
-      { name: 'Конфеты мультизлаковые с белой глазурью (фасовка 0,4кг) (Ж)', price: 1370 },
-      { name: 'Конфеты мультизлаковые с белой глазурью и воздушным рисом (фасовка 0,4кг) (З)', price: 1370 },
-      { name: 'Конфеты мультизлаковые с темной глазурью (фасовка 0,4кг) (С)', price: 1370 },
-      { name: 'Конфеты мультизлаковые с темной глазурью и воздушным рисом (фасовка 0,4кг) (К)', price: 1370 }
+      { name: "Конфеты мультизлаковые АССОРТИ Упаковка 0,4 кг.", price: 1370 },
+      { name: "Конфеты мультизлаковые с белой глазурью (фасовка 0,4кг) (Ж)", price: 1370 },
+      { name: "Конфеты мультизлаковые с белой глазурью и воздушным рисом (фасовка 0,4кг) (З)", price: 1370 },
+      { name: "Конфеты мультизлаковые с темной глазурью (фасовка 0,4кг) (С)", price: 1370 },
+      { name: "Конфеты мультизлаковые с темной глазурью и воздушным рисом (фасовка 0,4кг) (К)", price: 1370 }
     ]
   },
   {
     category: "Чак-чак",
     items: [
-      { name: 'Чак-Чак "Медовый" Коробка 0,150кг', price: 635 }
+      { name: "Чак-Чак Медовый Коробка 0,150кг", price: 635 }
     ]
   }
 ];
@@ -348,7 +348,7 @@ function renderCatalog() {
                     </div>
                     <div class="counter">
                         <button onclick="changeQty('${inputId}', -1)">-</button>
-                        <input type="number" id="${inputId}" value="0" min="0" data-name="${item.name}" data-price="${item.price}" onchange="recalcTotal()">
+                        <input type="number" id="${inputId}" value="0" min="0" data-price="${item.price}" onchange="recalcTotal()">
                         <button onclick="changeQty('${inputId}', 1)">+</button>
                     </div>
                 </div>
@@ -431,23 +431,24 @@ function sendOrder() {
         return;
     }
 
-    let message = "📦 *НОВЫЙ ЗАКАЗ (Madlen Fabrica)*\n\n";
-    message += `👤 *ИП:* ${ipVal}\n`;
-    message += `📍 *Адрес / Магазин:* ${addressVal}\n\n`;
-    message += "📋 *СОСТАВ ЗАКАЗА:*\n";
+    let message = "НОВЫЙ ЗАКАЗ (Madlen Fabrica)\n\n";
+    message += `ИП: ${ipVal}\n`;
+    message += `Адрес / Магазин: ${addressVal}\n\n`;
+    message += "СОСТАВ ЗАКАЗА:\n";
 
     let hasItems = false;
     let total = 0;
 
-    document.querySelectorAll('.counter input').forEach(input => {
+    document.querySelectorAll('.product-item').forEach(item => {
+        const input = item.querySelector('.counter input');
         const qty = parseInt(input.value) || 0;
         if (qty > 0) {
             hasItems = true;
-            const name = input.getAttribute('data-name');
-            const price = parseFloat(input.getAttribute('data-price'));
+            const name = item.querySelector('.product-name').innerText.trim();
+            const price = parseFloat(input.getAttribute('data-price')) || 0;
             const sum = qty * price;
             total += sum;
-            message += `• *${name}*\n   ${qty} шт x ${price} ₸ = ${sum} ₸\n`;
+            message += `• ${name}\n   ${qty} шт x ${price} ₸ = ${sum} ₸\n`;
         }
     });
 
@@ -456,7 +457,7 @@ function sendOrder() {
         return;
     }
 
-    message += `\n💰 *ИТОГО:* ${total.toLocaleString('ru-RU')} ₸`;
+    message += `\nИТОГО: ${total.toLocaleString('ru-RU')} ₸`;
 
     const encodedMsg = encodeURIComponent(message);
     window.open(`https://wa.me/?text=${encodedMsg}`, '_blank');
