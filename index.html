@@ -6,50 +6,19 @@
     <title>Прием заказов (Прайс)</title>
     <style>
         :root {
-            --primary-color: #d32f2f;
+            --primary-color: #4a6fa5;
             --accent-color: #25d366;
             --text-color: #333;
             --bg-color: #f4f6f9;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 120px; }
-        
-        /* Шапка с логотипом Madlen */
-        header { 
-            background-color: #d32f2f;
-            color: white; 
-            padding: 15px 15px 20px 15px; 
-            text-align: center; 
-            position: sticky; 
-            top: 0; 
-            z-index: 100; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2); 
-        }
-        .logo-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .logo-img {
-            max-height: 70px;
-            width: auto;
-            object-fit: contain;
-        }
-        h1 { font-size: 1.2rem; margin-bottom: 10px; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
-        .search-box { width: 100%; max-width: 500px; padding: 10px 15px; border: none; border-radius: 20px; font-size: 0.95rem; box-shadow: 0 2px 5px rgba(0,0,0,0.15); }
-        .container { max-width: 600px; margin: 15px auto; padding: 0 15px; }
-        
-        .client-info-card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .client-info-card h2 { font-size: 1rem; color: #d32f2f; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
-        .form-group { margin-bottom: 10px; }
-        .form-group:last-child { margin-bottom: 0; }
-        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 4px; }
-        .form-group input { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 5px; font-size: 0.95rem; }
-        .form-group input:focus { outline: none; border-color: #d32f2f; }
-
+        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 100px; }
+        header { background-color: var(--primary-color); color: white; padding: 20px; text-align: center; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h1 { font-size: 1.4rem; margin-bottom: 10px; }
+        .search-box { width: 100%; max-width: 500px; padding: 10px; border: none; border-radius: 5px; font-size: 1rem; }
+        .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
         .category { background: white; margin-bottom: 10px; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .category-title { background: #fdf2f2; padding: 15px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; color: #b71c1c; }
+        .category-title { background: #eef2f7; padding: 15px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
         .category-title::after { content: '▼'; font-size: 0.8rem; transition: transform 0.3s; }
         .category.open .category-title::after { transform: rotate(180deg); }
         .products-list { display: none; padding: 10px 0; }
@@ -58,128 +27,104 @@
         .product-item:last-child { border-bottom: none; }
         .product-info { flex: 1; padding-right: 10px; }
         .product-name { font-size: 0.95rem; font-weight: 500; margin-bottom: 4px; }
-        .product-price { font-size: 0.9rem; color: #d32f2f; font-weight: bold; }
+        .product-price { font-size: 0.9rem; color: #666; font-weight: bold; }
         .counter { display: flex; align-items: center; border: 1px solid #cbd5e1; border-radius: 5px; overflow: hidden; }
         .counter button { background: #f8fafc; border: none; width: 32px; height: 32px; font-size: 1.2rem; cursor: pointer; transition: background 0.2s; }
         .counter button:hover { background: #e2e8f0; }
         .counter input { width: 40px; height: 32px; text-align: center; border: none; border-left: 1px solid #cbd5e1; border-right: 1px solid #cbd5e1; font-size: 0.95rem; font-weight: bold; }
         .footer-panel { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); z-index: 100; }
-        .total-box { font-size: 1.05rem; font-weight: bold; }
-        .total-box span { color: #d32f2f; }
-        .order-btn { background-color: var(--accent-color); color: white; border: none; padding: 12px 20px; border-radius: 5px; font-size: 0.95rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: transform 0.2s; }
+        .total-box { font-size: 1.1rem; font-weight: bold; }
+        .total-box span { color: var(--primary-color); }
+        .order-btn { background-color: var(--accent-color); color: white; border: none; padding: 12px 25px; border-radius: 5px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: transform 0.2s; }
         .order-btn:active { transform: scale(0.98); }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo-container">
-        <!-- Встроенное лого Madlen Fabrica -->
-        <svg class="logo-img" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
-            <rect width="100%" height="100%" fill="#d32f2f"/>
-            <text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="'Georgia', 'Times New Roman', serif" font-weight="bold" font-size="64">Madlen</text>
-            <text x="50%" y="68%" dominant-baseline="middle" text-anchor="middle" fill="#ffffff" font-family="'Georgia', 'Times New Roman', serif" font-size="28">Fabrica</text>
-            <path d="M 20 160 Q 200 130 380 160" stroke="#fbc02d" stroke-width="8" fill="none" stroke-linecap="round"/>
-        </svg>
-    </div>
     <h1>Прием заказов (Прайс)</h1>
     <input type="text" id="search" class="search-box" placeholder="Поиск товара или группы...">
 </header>
 
-<div class="container">
-    <div class="client-info-card">
-        <h2>Информация о торговой точке</h2>
-        <div class="form-group">
-            <label for="store-name">ИП / Название магазина *</label>
-            <input type="text" id="store-name">
-        </div>
-        <div class="form-group">
-            <label for="store-address">Адрес торговой точки *</label>
-            <input type="text" id="store-address">
-        </div>
-    </div>
-
-    <div id="catalog"></div>
-</div>
+<div class="container" id="catalog"></div>
 
 <div class="footer-panel">
-    <div class="total-box">ИТОГО: <span id="total-sum">0</span> ₸</div>
+    <div class="total-box">ИТОГО К ОПЛАТЕ: <span id="total-sum">0</span> ₸</div>
     <button class="order-btn" onclick="sendOrder()">Отправить заказ</button>
 </div>
 
 <script>
+// Обновленный каталог товаров по вашей таблице
 const catalogData = [
   {
     category: "Сахарное печенье",
     items: [
-      { name: 'Печенье "К Чаю Восточное" Коробка 4кг.', price: 4030 },
-      { name: 'Печенье "К Чаю Восточное" Пакет 0,5кг.', price: 665 },
-      { name: 'Печенье "Восточное Шоколадное" Коробка 4кг.', price: 5460 },
-      { name: 'Печенье "Любимое с белым шоколадом" Коробка 0,46 кг.', price: 1040 },
-      { name: 'Печенье "Любимое с темным шоколадом" Коробка 0,46 кг.', price: 1040 }
+      { name: 'Печенье "К Чаю Восточное" Коробка 4кг.', price: 4995 },
+      { name: 'Печенье "К Чаю Восточное" Пакет 0,5кг.', price: 755 },
+      { name: 'Печенье "К Чаю Шоколадное" Коробка 4кг.', price: 6370 },
+      { name: 'Печенье "К Чаю Шоколадное" Пакет 0,5кг.', price: 855 },
+      { name: 'Печенье "Любимое с белым шоколадом" Коробка 0,46 кг.', price: 1190 },
+      { name: 'Печенье "Любимое с темным шоколадом" Коробка 0,46 кг.', price: 1190 },
+      { name: 'Печенье "Артемон" Коробка 1,5 кг.', price: 3210 }
     ]
   },
   {
     category: "Песочное печенье",
     items: [
       { name: 'Печенье "К Чаю Домашнее" Коробка 5,5кг.', price: 5905 },
-      { name: 'Печенье "К Чаю Домашнее" Пакет 0,5 кг.', price: 715 },
-      { name: 'Печенье "Овсяное" Коробка 3кг.', price: 3250 }
+      { name: 'Печенье "К Чаю Домашнее" Пакет 0,5 кг.', price: 795 },
+      { name: 'Печенье "Овсяное" Коробка 3кг.', price: 3690 }
     ]
   },
   {
-    category: "Печенье затяжное",
+    category: "Затяжное печенье",
     items: [
-      { name: 'Печенье "Madlen" Коробка 3 кг.', price: 2965 },
-      { name: 'Печенье "Madlen" Пакет 0,5 кг.', price: 665 }
+      { name: 'Печенье "Madlen" Коробка 3 кг.', price: 3445 },
+      { name: 'Печенье "Madlen" Пакет 0,5 кг.', price: 710 }
     ]
   },
   {
     category: "Печенье крекер",
     items: [
-      { name: 'Печенье "Крекер сырный" Коррекс 0,75 кг.', price: 1225 }
+      { name: 'Печенье "Крекер сырный" Коррекс 0,75 кг.', price: 1415 }
     ]
   },
   {
     category: "Воздушный десерт ZIFFY",
     items: [
-      { name: 'Печенье "Ziffy клубничный" Коробка 0,31 кг.', price: 1015 },
-      { name: 'Печенье "Ziffy с кокосом" Коробка 0,31 кг.', price: 1015 },
-      { name: 'Печенье "Ziffy шоколадный с кокосом" Коробка 0,38 кг.', price: 1185 },
-      { name: 'Печенье "Ziffy" Коробка 0,35 кг.', price: 1120 }
+      { name: 'Печенье "Ziffy клубничный" Коробка 0,31 кг.', price: 1140 },
+      { name: 'Печенье "Ziffy с кокосом" Коробка 0,31 кг.', price: 1140 },
+      { name: 'Печенье "Ziffy шоколадный с кокосом" Коробка 0,38 кг.', price: 1335 },
+      { name: 'Печенье "Ziffy" Коробка 0,35 кг.', price: 1255 }
     ]
   },
   {
     category: "Печенье сэндвич",
     items: [
-      { name: 'Печенье "Caramel Pie" Коробка 1,3кг.', price: 3265 },
-      { name: 'Печенье "Choco Loco" Коробка 12 шт. (0,360 кг.)', price: 1200 },
-      { name: 'Печенье "Choco Loco" Коробка 8 шт. (0,240 кг.)', price: 800 },
-      { name: 'Печенье "Choco Loco" Шоу бокс 22 шт. по 0,66 кг.', price: 2005 }
-    ]
-  },
-  {
-    category: "ЧАК-ЧАК",
-    items: [
-      { name: 'Чак-Чак "Медовый с миндалём" Шоу Бокс 20 шт по 28 гр.', price: 2340 }
+      { name: 'Печенье "Choco Loco" Коробка 12 шт. (0,360 кг.)', price: 1295 },
+      { name: 'Печенье "Choco Loco" Коробка 8 шт. (0,240 кг.)', price: 920 },
+      { name: 'Печенье "Choco Loco" Шоу бокс 22 шт. по 0,66 кг.', price: 2220 }
     ]
   },
   {
     category: "Мультизлаковые конфеты",
     items: [
-      { name: 'Конфеты мультизлаковые АССОРТИ Упаковка 0,4 кг.', price: 1250 },
-      { name: 'Конфеты мультизлаковые с белой глазурью (фасовка 0,4кг) (Ж)', price: 1250 },
-      { name: 'Конфеты мультизлаковые с белой глазурью и воздушным рисом (фасовка 0,4кг) (З)', price: 1250 },
-      { name: 'Конфеты мультизлаковые с темной глазурью (фасовка 0,4кг) (С)', price: 1250 },
-      { name: 'Конфеты мультизлаковые с темной глазурью и воздушным рисом (фасовка 0,4кг) (К)', price: 1250 }
+      { name: 'Конфеты мультизлаковые АССОРТИ Упаковка 0,4 кг.', price: 1370 },
+      { name: 'Конфеты мультизлаковые с белой глазурью (фасовка 0,4кг) (Ж)', price: 1370 },
+      { name: 'Конфеты мультизлаковые с белой глазурью и воздушным рисом (фасовка 0,4кг) (З)', price: 1370 },
+      { name: 'Конфеты мультизлаковые с темной глазурью (фасовка 0,4кг) (С)', price: 1370 },
+      { name: 'Конфеты мультизлаковые с темной глазурью и воздушным рисом (фасовка 0,4кг) (К)', price: 1370 }
+    ]
+  },
+  {
+    category: "Чак-чак",
+    items: [
+      { name: 'Чак-Чак "Медовый" Коробка 0,150кг', price: 635 }
     ]
   }
 ];
 
-function escapeHtml(str) {
-    return str.replace(/"/g, '&quot;');
-}
-
+// Рендер каталога
 function renderCatalog() {
     const catalogContainer = document.getElementById('catalog');
     catalogContainer.innerHTML = '';
@@ -191,7 +136,6 @@ function renderCatalog() {
         let itemsHTML = '';
         cat.items.forEach((item, itemIdx) => {
             const inputId = `item-${catIdx}-${itemIdx}`;
-            const safeName = escapeHtml(item.name);
             itemsHTML += `
                 <div class="product-item">
                     <div class="product-info">
@@ -200,7 +144,7 @@ function renderCatalog() {
                     </div>
                     <div class="counter">
                         <button onclick="changeQty('${inputId}', -1)">-</button>
-                        <input type="number" id="${inputId}" value="0" min="0" data-name="${safeName}" data-price="${item.price}" onchange="recalcTotal()">
+                        <input type="number" id="${inputId}" value="0" min="0" data-name="${item.name}" data-price="${item.price}" onchange="recalcTotal()">
                         <button onclick="changeQty('${inputId}', 1)">+</button>
                     </div>
                 </div>
@@ -237,6 +181,7 @@ function recalcTotal() {
     document.getElementById('total-sum').innerText = total.toLocaleString('ru-RU');
 }
 
+// Поиск
 document.getElementById('search').addEventListener('input', function(e) {
     const text = e.target.value.toLowerCase().trim();
     document.querySelectorAll('.category').forEach(cat => {
@@ -265,25 +210,11 @@ document.getElementById('search').addEventListener('input', function(e) {
     });
 });
 
+// Отправка заказа в WhatsApp
 function sendOrder() {
-    const storeName = document.getElementById('store-name').value.trim();
-    const storeAddress = document.getElementById('store-address').value.trim();
-
-    if (!storeName) {
-        alert("Пожалуйста, укажите ИП / Название магазина!");
-        document.getElementById('store-name').focus();
-        return;
-    }
-
-    if (!storeAddress) {
-        alert("Пожалуйста, укажите адрес торговой точки!");
-        document.getElementById('store-address').focus();
-        return;
-    }
-
+    let message = "📦 *НОВЫЙ ЗАКАЗ*\n\n";
     let hasItems = false;
     let total = 0;
-    let itemsText = "";
 
     document.querySelectorAll('.counter input').forEach(input => {
         const qty = parseInt(input.value) || 0;
@@ -293,7 +224,7 @@ function sendOrder() {
             const price = parseFloat(input.getAttribute('data-price'));
             const sum = qty * price;
             total += sum;
-            itemsText += `• *${name}*\n   ${qty} шт x ${price} ₸ = ${sum} ₸\n`;
+            message += `• *${name}*\n   ${qty} шт x ${price} ₸ = ${sum} ₸\n`;
         }
     });
 
@@ -302,13 +233,7 @@ function sendOrder() {
         return;
     }
 
-    let message = `📦 *НОВЫЙ ЗАКАЗ*\n\n`;
-    message += `🏪 *Клиент:* ${storeName}\n`;
-    message += `📍 *Адрес:* ${storeAddress}\n\n`;
-    message += `------------------------------\n`;
-    message += itemsText;
-    message += `------------------------------\n`;
-    message += `💰 *ИТОГО К ОПЛАТЕ:* ${total.toLocaleString('ru-RU')} ₸`;
+    message += `\n💰 *ИТОГО:* ${total.toLocaleString('ru-RU')} ₸`;
 
     const encodedMsg = encodeURIComponent(message);
     window.open(`https://wa.me/?text=${encodedMsg}`, '_blank');
