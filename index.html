@@ -3,468 +3,462 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Madlen Fabrica — Прайс-лист</title>
+    <title>Заказ товаров</title>
     <style>
-        :root {
-            --primary-red: #e30613;     /* Ярко-красный Madlen */
-            --yellow-accent: #ffed00;  /* Желтая волна / акценты */
-            --whatsapp-green: #25d366;
-            --dark-text: #1a1a1a;
-            --bg-color: #f9f9f9;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--dark-text); padding-bottom: 110px; }
+        * { box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 15px; max-width: 600px; margin: 0 auto; background-color: #f4f5f7; color: #222; }
+        h2 { text-align: center; margin-bottom: 20px; font-size: 22px; }
         
-        /* Шапка в стиле Madlen Fabrica */
-        header { 
-            background-color: var(--primary-red); 
-            color: white; 
-            padding: 20px 15px 25px 15px; 
-            text-align: center; 
-            position: sticky; 
-            top: 0; 
-            z-index: 100; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        }
-        .logo-text {
-            font-size: 1.8rem;
-            font-weight: 900;
-            letter-spacing: 0.5px;
-            text-transform: none;
-            margin-bottom: 2px;
-            font-family: 'Georgia', serif;
-        }
-        .sub-logo {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 600;
-            margin-bottom: 12px;
-            opacity: 0.95;
-        }
-        
-        /* Желтая декоративная полоса/волна */
-        .wave-line {
-            height: 5px;
-            background: var(--yellow-accent);
-            border-radius: 3px;
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto 15px auto;
-        }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; font-size: 14px; }
+        input[type="text"], textarea { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; outline: none; background: #fff; }
+        input[type="text"]:focus, textarea:focus { border-color: #25D366; }
 
-        .search-box { 
-            width: 100%; 
-            max-width: 500px; 
-            padding: 11px 15px; 
-            border: 2px solid white; 
-            border-radius: 8px; 
-            font-size: 0.95rem; 
-            outline: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
-        .search-box:focus {
-            border-color: var(--yellow-accent);
-        }
+        .catalog { margin-top: 20px; background: #fff; padding: 15px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .catalog h3 { margin-top: 0; margin-bottom: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px; font-size: 18px; }
 
-        .container { max-width: 600px; margin: 20px auto; padding: 0 15px; }
+        .category-title { font-weight: bold; font-size: 15px; color: #128C7E; margin: 15px 0 8px 0; padding-bottom: 4px; border-bottom: 1px solid #eee; }
 
-        /* Блок данных клиента */
-        .client-info-card {
-            background: white;
-            padding: 16px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            border: 1px solid #eee;
-            border-left: 5px solid var(--primary-red);
-        }
-        .client-info-card h3 {
-            font-size: 1rem;
-            color: var(--primary-red);
-            margin-bottom: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .input-group {
-            margin-bottom: 10px;
-        }
-        .input-group:last-child {
-            margin-bottom: 0;
-        }
-        .input-group label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 700;
-            margin-bottom: 4px;
-            color: #444;
-        }
-        .input-group input {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .input-group input:focus {
-            border-color: var(--primary-red);
-        }
-        
-        /* Категории */
-        .category { 
-            background: white; 
-            margin-bottom: 12px; 
-            border-radius: 10px; 
-            overflow: hidden; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
-            border: 1px solid #eee;
-        }
-        .category-title { 
-            background: #fff8f8; 
-            color: var(--primary-red); 
-            padding: 14px 16px; 
-            font-weight: 700; 
-            font-size: 1.05rem;
-            cursor: pointer; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            user-select: none; 
-            border-left: 5px solid var(--primary-red);
-        }
-        .category-title::after { 
-            content: '▼'; 
-            font-size: 0.75rem; 
-            transition: transform 0.3s; 
-            color: var(--primary-red); 
-        }
-        .category.open .category-title::after { transform: rotate(180deg); }
-        .products-list { display: none; padding: 5px 0; }
-        .category.open .products-list { display: block; }
-        
-        /* Карточка товара */
-        .product-item { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 12px 16px; 
-            border-bottom: 1px solid #f2f2f2; 
-        }
+        .product-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #eee; }
         .product-item:last-child { border-bottom: none; }
-        .product-info { flex: 1; padding-right: 10px; }
-        .product-name { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; color: #222; }
-        .product-price { font-size: 0.95rem; color: var(--primary-red); font-weight: 800; }
-        
-        /* Счетчик */
-        .counter { 
-            display: flex; 
-            align-items: center; 
-            border: 1px solid #ddd; 
-            border-radius: 6px; 
-            overflow: hidden; 
-            background: #fff;
-        }
-        .counter button { 
-            background: #f8f8f8; 
-            border: none; 
-            width: 32px; 
-            height: 32px; 
-            font-size: 1.2rem; 
-            font-weight: bold;
-            cursor: pointer; 
-            transition: background 0.2s; 
-            color: var(--primary-red); 
-        }
-        .counter button:hover { background: var(--yellow-accent); color: #000; }
-        .counter input { 
-            width: 42px; 
-            height: 32px; 
-            text-align: center; 
-            border: none; 
-            border-left: 1px solid #ddd; 
-            border-right: 1px solid #ddd; 
-            font-size: 0.95rem; 
-            font-weight: bold; 
-            color: #111;
-        }
-        
-        /* Нижняя панель */
-        .footer-panel { 
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            background: white; 
-            padding: 15px 20px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.1); 
-            z-index: 100; 
-            border-top: 3px solid var(--primary-red); 
-        }
-        .total-box { font-size: 1.05rem; font-weight: bold; color: #333; }
-        .total-box span { color: var(--primary-red); font-size: 1.2rem; font-weight: 800; }
-        .order-btn { 
-            background-color: var(--whatsapp-green); 
-            color: white; 
-            border: none; 
-            padding: 12px 20px; 
-            border-radius: 6px; 
-            font-size: 0.95rem; 
-            font-weight: bold; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            transition: transform 0.2s, background-color 0.2s; 
-            box-shadow: 0 2px 6px rgba(37,211,102,0.3);
-        }
-        .order-btn:active { transform: scale(0.97); }
+        .product-info { flex-grow: 1; padding-right: 10px; }
+        .product-title { font-weight: 600; font-size: 14px; line-height: 1.3; }
+        .product-price { color: #666; font-size: 13px; margin-top: 3px; font-weight: bold; }
+
+        .qty-controls { display: flex; align-items: center; gap: 6px; }
+        .qty-btn { width: 36px; height: 36px; border: 1px solid #ddd; background: #f8f9fa; font-weight: bold; cursor: pointer; border-radius: 6px; font-size: 18px; display: flex; align-items: center; justify-content: center; -webkit-tap-highlight-color: transparent; }
+        .qty-btn:active { background: #e2e6ea; }
+        .qty-input { width: 45px !important; text-align: center; padding: 6px 2px !important; margin: 0; font-size: 16px; font-weight: bold; border: 1px solid #ddd; border-radius: 6px; }
+
+        .total-box { font-size: 18px; font-weight: 700; text-align: right; margin-top: 15px; padding-top: 10px; border-top: 2px solid #f0f0f0; }
+        .send-btn { width: 100%; padding: 15px; background-color: #25D366; color: white; border: none; border-radius: 10px; font-size: 17px; font-weight: bold; cursor: pointer; margin-top: 15px; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
+        .send-btn:active { background-color: #128C7E; }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="logo-text">Madlen</div>
-    <div class="sub-logo">Fabrica</div>
-    <div class="wave-line"></div>
-    <input type="text" id="search" class="search-box" placeholder="Поиск товара или группы...">
-</header>
+    <h2>Оформление заказа</h2>
 
-<div class="container">
-    <!-- Блок ввода данных клиента -->
-    <div class="client-info-card">
-        <h3>Информация о заказчике</h3>
-        <div class="input-group">
-            <label for="client-ip">ИП:</label>
-            <input type="text" id="client-ip" placeholder="Введите наименование ИП">
-        </div>
-        <div class="input-group">
-            <label for="client-address">Адрес доставки / название магазина:</label>
-            <input type="text" id="client-address" placeholder="Улица, дом, название магазина">
-        </div>
+    <div class="form-group">
+        <label>Название ИП (необязательно):</label>
+        <input type="text" id="ipName" placeholder="Введите название ИП">
     </div>
 
-    <!-- Каталог товаров -->
-    <div id="catalog"></div>
-</div>
+    <div class="form-group">
+        <label>Адрес (необязательно):</label>
+        <input type="text" id="address" placeholder="Введите адрес">
+    </div>
 
-<div class="footer-panel">
-    <div class="total-box">ИТОГО: <span id="total-sum">0</span> ₸</div>
-    <button class="order-btn" onclick="sendOrder()">Отправить заказ</button>
-</div>
+    <div class="catalog">
+        <h3>Каталог товаров</h3>
 
-<script>
-// Прайс-лист
-const catalogData = [
-  {
-    category: "Сахарное печенье",
-    items: [
-      { name: "Печенье К Чаю Восточное Коробка 4кг.", price: 4995 },
-      { name: "Печенье К Чаю Восточное Пакет 0,5кг.", price: 755 },
-      { name: "Печенье К Чаю Шоколадное Коробка 4кг.", price: 6370 },
-      { name: "Печенье К Чаю Шоколадное Пакет 0,5кг.", price: 855 },
-      { name: "Печенье Любимое с белым шоколадом Коробка 0,46 кг.", price: 1190 },
-      { name: "Печенье Любимое с темным шоколадом Коробка 0,46 кг.", price: 1190 },
-      { name: "Печенье Артемон Коробка 1,5 кг.", price: 3210 }
-    ]
-  },
-  {
-    category: "Песочное печенье",
-    items: [
-      { name: "Печенье К Чаю Домашнее Коробка 5,5кг.", price: 5905 },
-      { name: "Печенье К Чаю Домашнее Пакет 0,5 кг.", price: 795 },
-      { name: "Печенье Овсяное Коробка 3кг.", price: 3690 }
-    ]
-  },
-  {
-    category: "Затяжное печенье",
-    items: [
-      { name: "Печенье Madlen Коробка 3 кг.", price: 3445 },
-      { name: "Печенье Madlen Пакет 0,5 кг.", price: 710 }
-    ]
-  },
-  {
-    category: "Печенье крекер",
-    items: [
-      { name: "Печенье Крекер сырный Коррекс 0,75 кг.", price: 1415 }
-    ]
-  },
-  {
-    category: "Воздушный десерт ZIFFY",
-    items: [
-      { name: "Печенье Ziffy клубничный Коробка 0,31 кг.", price: 1140 },
-      { name: "Печенье Ziffy с кокосом Коробка 0,31 кг.", price: 1140 },
-      { name: "Печенье Ziffy шоколадный с кокосом Коробка 0,38 кг.", price: 1335 },
-      { name: "Печенье Ziffy Коробка 0,35 кг.", price: 1255 }
-    ]
-  },
-  {
-    category: "Печенье сэндвич",
-    items: [
-      { name: "Печенье Choco Loco Коробка 12 шт. (0,360 кг.)", price: 1295 },
-      { name: "Печенье Choco Loco Коробка 8 шт. (0,240 кг.)", price: 920 },
-      { name: "Печенье Choco Loco Шоу бокс 22 шт. по 0,66 кг.", price: 2220 }
-    ]
-  },
-  {
-    category: "Мультизлаковые конфеты",
-    items: [
-      { name: "Конфеты мультизлаковые АССОРТИ Упаковка 0,4 кг.", price: 1370 },
-      { name: "Конфеты мультизлаковые с белой глазурью (фасовка 0,4кг) (Ж)", price: 1370 },
-      { name: "Конфеты мультизлаковые с белой глазурью и воздушным рисом (фасовка 0,4кг) (З)", price: 1370 },
-      { name: "Конфеты мультизлаковые с темной глазурью (фасовка 0,4кг) (С)", price: 1370 },
-      { name: "Конфеты мультизлаковые с темной глазурью и воздушным рисом (фасовка 0,4кг) (К)", price: 1370 }
-    ]
-  },
-  {
-    category: "Чак-чак",
-    items: [
-      { name: "Чак-Чак Медовый Коробка 0,150кг", price: 635 }
-    ]
-  }
-];
+        <!-- Мультизлаковые конфеты -->
+        <div class="category-title">Мультизлаковые конфеты</div>
 
-// Рендер каталога
-function renderCatalog() {
-    const catalogContainer = document.getElementById('catalog');
-    catalogContainer.innerHTML = '';
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Конфеты мультизлаковые АССОРТИ Упаковка 0,4 кг.</div>
+                <div class="product-price">1 370 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p1', -1)">-</button>
+                <input type="number" id="p1" class="qty-input" value="0" min="0" data-name="Конфеты мультизлаковые АССОРТИ Упаковка 0,4 кг." data-price="1370" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p1', 1)">+</button>
+            </div>
+        </div>
 
-    catalogData.forEach((cat, catIdx) => {
-        const catDiv = document.createElement('div');
-        catDiv.className = 'category';
-        
-        let itemsHTML = '';
-        cat.items.forEach((item, itemIdx) => {
-            const inputId = `item-${catIdx}-${itemIdx}`;
-            itemsHTML += `
-                <div class="product-item">
-                    <div class="product-info">
-                        <div class="product-name">${item.name}</div>
-                        <div class="product-price">${item.price} ₸</div>
-                    </div>
-                    <div class="counter">
-                        <button onclick="changeQty('${inputId}', -1)">-</button>
-                        <input type="number" id="${inputId}" value="0" min="0" data-price="${item.price}" onchange="recalcTotal()">
-                        <button onclick="changeQty('${inputId}', 1)">+</button>
-                    </div>
-                </div>
-            `;
-        });
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Конфеты мультизлаковые с белой глазурью (фасовка 0,4кг) (Ж)</div>
+                <div class="product-price">1 370 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p2', -1)">-</button>
+                <input type="number" id="p2" class="qty-input" value="0" min="0" data-name="Конфеты мультизлаковые с белой глазурью (фасовка 0,4кг) (Ж)" data-price="1370" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p2', 1)">+</button>
+            </div>
+        </div>
 
-        catDiv.innerHTML = `
-            <div class="category-title" onclick="toggleCategory(this)">${cat.category}</div>
-            <div class="products-list">${itemsHTML}</div>
-        `;
-        catalogContainer.appendChild(catDiv);
-    });
-}
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Конфеты мультизлаковые с белой глазурью и воздушным рисом (фасовка 0,4кг) (3)</div>
+                <div class="product-price">1 370 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p3', -1)">-</button>
+                <input type="number" id="p3" class="qty-input" value="0" min="0" data-name="Конфеты мультизлаковые с белой глазурью и воздушным рисом (фасовка 0,4кг) (3)" data-price="1370" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p3', 1)">+</button>
+            </div>
+        </div>
 
-function toggleCategory(el) {
-    el.parentElement.classList.toggle('open');
-}
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Конфеты мультизлаковые с темной глазурью (фасовка 0,4кг) (С)</div>
+                <div class="product-price">1 370 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p4', -1)">-</button>
+                <input type="number" id="p4" class="qty-input" value="0" min="0" data-name="Конфеты мультизлаковые с темной глазурью (фасовка 0,4кг) (С)" data-price="1370" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p4', 1)">+</button>
+            </div>
+        </div>
 
-function changeQty(id, delta) {
-    const input = document.getElementById(id);
-    let val = parseInt(input.value) || 0;
-    val = Math.max(0, val + delta);
-    input.value = val;
-    recalcTotal();
-}
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Конфеты мультизлаковые с темной глазурью и воздушным рисом (фасовка 0,4кг)</div>
+                <div class="product-price">1 370 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p5', -1)">-</button>
+                <input type="number" id="p5" class="qty-input" value="0" min="0" data-name="Конфеты мультизлаковые с темной глазурью и воздушным рисом (фасовка 0,4кг)" data-price="1370" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p5', 1)">+</button>
+            </div>
+        </div>
 
-function recalcTotal() {
-    let total = 0;
-    document.querySelectorAll('.counter input').forEach(input => {
-        const qty = parseInt(input.value) || 0;
-        const price = parseFloat(input.getAttribute('data-price')) || 0;
-        total += qty * price;
-    });
-    document.getElementById('total-sum').innerText = total.toLocaleString('ru-RU');
-}
+        <!-- Печенье Сэндвич -->
+        <div class="category-title">Печенье Сэндвич</div>
 
-// Поиск
-document.getElementById('search').addEventListener('input', function(e) {
-    const text = e.target.value.toLowerCase().trim();
-    document.querySelectorAll('.category').forEach(cat => {
-        let hasVisible = false;
-        cat.querySelectorAll('.product-item').forEach(item => {
-            const name = item.querySelector('.product-name').innerText.toLowerCase();
-            if (name.includes(text)) {
-                item.style.display = 'flex';
-                hasVisible = true;
-            } else {
-                item.style.display = 'none';
-            }
-        });
-        if (text !== '') {
-            if (hasVisible) {
-                cat.style.display = 'block';
-                cat.classList.add('open');
-            } else {
-                cat.style.display = 'none';
-            }
-        } else {
-            cat.style.display = 'block';
-            cat.classList.remove('open');
-            cat.querySelectorAll('.product-item').forEach(item => item.style.display = 'flex');
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "Choco Loco" Коробка 12 шт. (0,360 кг.)</div>
+                <div class="product-price">1 295 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p6', -1)">-</button>
+                <input type="number" id="p6" class="qty-input" value="0" min="0" data-name="Печенье &quot;Choco Loco&quot; Коробка 12 шт. (0,360 кг.)" data-price="1295" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p6', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "Choco Loco" Коробка 8 шт (0,240 кг.)</div>
+                <div class="product-price">920 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p7', -1)">-</button>
+                <input type="number" id="p7" class="qty-input" value="0" min="0" data-name="Печенье &quot;Choco Loco&quot; Коробка 8 шт (0,240 кг.)" data-price="920" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p7', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "Choco Loco" Шоу бокс 22 шт. по 0,66 кг.</div>
+                <div class="product-price">2 220 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p8', -1)">-</button>
+                <input type="number" id="p8" class="qty-input" value="0" min="0" data-name="Печенье &quot;Choco Loco&quot; Шоу бокс 22 шт. по 0,66 кг." data-price="2220" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p8', 1)">+</button>
+            </div>
+        </div>
+
+        <!-- Воздушный десерт ZIFFY -->
+        <div class="category-title">Воздушный десерт ZIFFY</div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "Ziffy клубничный" Коробка 0,31 кг.</div>
+                <div class="product-price">1 140 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p9', -1)">-</button>
+                <input type="number" id="p9" class="qty-input" value="0" min="0" data-name="Печенье &quot;Ziffy клубничный&quot; Коробка 0,31 кг." data-price="1140" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p9', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "Ziffy с кокосом" Коробка 0,31 кг.</div>
+                <div class="product-price">1 140 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p10', -1)">-</button>
+                <input type="number" id="p10" class="qty-input" value="0" min="0" data-name="Печенье &quot;Ziffy с кокосом&quot; Коробка 0,31 кг." data-price="1140" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p10', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "Ziffy шоколадный с кокосом" Коробка 0,38 кг.</div>
+                <div class="product-price">1 335 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p11', -1)">-</button>
+                <input type="number" id="p11" class="qty-input" value="0" min="0" data-name="Печенье &quot;Ziffy шоколадный с кокосом&quot; Коробка 0,38 кг." data-price="1335" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p11', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "Ziffy" Коробка 0,35 кг.</div>
+                <div class="product-price">1 255 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p12', -1)">-</button>
+                <input type="number" id="p12" class="qty-input" value="0" min="0" data-name="Печенье &quot;Ziffy&quot; Коробка 0,35 кг." data-price="1255" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p12', 1)">+</button>
+            </div>
+        </div>
+
+        <!-- Сахарное печенье -->
+        <div class="category-title">Сахарное печенье</div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "Артемон" Коробка 1,5 кг.</div>
+                <div class="product-price">3 210 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p13', -1)">-</button>
+                <input type="number" id="p13" class="qty-input" value="0" min="0" data-name="Печенье &quot;Артемон&quot; Коробка 1,5 кг." data-price="3210" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p13', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "К Чаю Восточное" Коробка 4кг.</div>
+                <div class="product-price">4 995 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p14', -1)">-</button>
+                <input type="number" id="p14" class="qty-input" value="0" min="0" data-name="Печенье &quot;К Чаю Восточное&quot; Коробка 4кг." data-price="4995" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p14', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "К Чаю Восточное" Пакет 0,5кг.</div>
+                <div class="product-price">755 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p15', -1)">-</button>
+                <input type="number" id="p15" class="qty-input" value="0" min="0" data-name="Печенье &quot;К Чаю Восточное&quot; Пакет 0,5кг." data-price="755" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p15', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "К Чаю Домашнее" Коробка 5,5кг.</div>
+                <div class="product-price">5 905 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p16', -1)">-</button>
+                <input type="number" id="p16" class="qty-input" value="0" min="0" data-name="Печенье &quot;К Чаю Домашнее&quot; Коробка 5,5кг." data-price="5905" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p16', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "К Чаю Домашнее" Пакет 0,5 кг.</div>
+                <div class="product-price">795 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p17', -1)">-</button>
+                <input type="number" id="p17" class="qty-input" value="0" min="0" data-name="Печенье &quot;К Чаю Домашнее&quot; Пакет 0,5 кг." data-price="795" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p17', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "К Чаю Шоколадное" Коробка 4кг.</div>
+                <div class="product-price">6 370 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p18', -1)">-</button>
+                <input type="number" id="p18" class="qty-input" value="0" min="0" data-name="Печенье &quot;К Чаю Шоколадное&quot; Коробка 4кг." data-price="6370" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p18', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "К Чаю Шоколадное" Пакет 0,5кг.</div>
+                <div class="product-price">855 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p19', -1)">-</button>
+                <input type="number" id="p19" class="qty-input" value="0" min="0" data-name="Печенье &quot;К Чаю Шоколадное&quot; Пакет 0,5кг." data-price="855" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p19', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "Крекер сырный" Коррекс 0,75 кг.</div>
+                <div class="product-price">1 415 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p20', -1)">-</button>
+                <input type="number" id="p20" class="qty-input" value="0" min="0" data-name="Печенье &quot;Крекер сырный&quot; Коррекс 0,75 кг." data-price="1415" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p20', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "Любимое с белым шоколадом" Коробка 0,46 кг.</div>
+                <div class="product-price">1 190 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p21', -1)">-</button>
+                <input type="number" id="p21" class="qty-input" value="0" min="0" data-name="Печенье &quot;Любимое с белым шоколадом&quot; Коробка 0,46 кг." data-price="1190" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p21', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "Любимое с темным шоколадом" Коробка 0,46 кг.</div>
+                <div class="product-price">1 190 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p22', -1)">-</button>
+                <input type="number" id="p22" class="qty-input" value="0" min="0" data-name="Печенье &quot;Любимое с темным шоколадом&quot; Коробка 0,46 кг." data-price="1190" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p22', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "Овсяное" Коробка 3кг.</div>
+                <div class="product-price">3 690 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p23', -1)">-</button>
+                <input type="number" id="p23" class="qty-input" value="0" min="0" data-name="Печенье &quot;Овсяное&quot; Коробка 3кг." data-price="3690" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p23', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "Madlen" Коробка 3 кг.</div>
+                <div class="product-price">3 445 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p24', -1)">-</button>
+                <input type="number" id="p24" class="qty-input" value="0" min="0" data-name="Печенье &quot;Madlen&quot; Коробка 3 кг." data-price="3445" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p24', 1)">+</button>
+            </div>
+        </div>
+
+        <!-- Чак Чак -->
+        <div class="category-title">Чак Чак</div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Печенье "Madlen" Пакет 0,5 кг.</div>
+                <div class="product-price">710 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p25', -1)">-</button>
+                <input type="number" id="p25" class="qty-input" value="0" min="0" data-name="Печенье &quot;Madlen&quot; Пакет 0,5 кг." data-price="710" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p25', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Чак-Чак "Медовый с миндалём" Шоу Бокс 20 шт по 28 гр.</div>
+                <div class="product-price">2 625 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p26', -1)">-</button>
+                <input type="number" id="p26" class="qty-input" value="0" min="0" data-name="Чак-Чак &quot;Медовый с миндалём&quot; Шоу Бокс 20 шт по 28 гр." data-price="2625" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p26', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="product-item">
+            <div class="product-info">
+                <div class="product-title">Чак-Чак "Медовый" Коробка 0,150кг</div>
+                <div class="product-price">635 ₸</div>
+            </div>
+            <div class="qty-controls">
+                <button class="qty-btn" onclick="changeQty('p27', -1)">-</button>
+                <input type="number" id="p27" class="qty-input" value="0" min="0" data-name="Чак-Чак &quot;Медовый&quot; Коробка 0,150кг" data-price="635" onchange="calculateTotal()">
+                <button class="qty-btn" onclick="changeQty('p27', 1)">+</button>
+            </div>
+        </div>
+
+        <div class="total-box">Итого: <span id="totalSum">0</span> ₸</div>
+    </div>
+
+    <div class="form-group" style="margin-top: 15px;">
+        <label>Комментарий к заказу:</label>
+        <textarea id="comment" rows="3" placeholder="Дополнительные пожелания..."></textarea>
+    </div>
+
+    <button class="send-btn" onclick="sendToWhatsApp()">Отправить в WhatsApp</button>
+
+    <script>
+        function changeQty(id, delta) {
+            const input = document.getElementById(id);
+            let val = parseInt(input.value) || 0;
+            val = Math.max(0, val + delta);
+            input.value = val;
+            calculateTotal();
         }
-    });
-});
 
-// Отправка заказа в WhatsApp
-function sendOrder() {
-    const ipVal = document.getElementById('client-ip').value.trim();
-    const addressVal = document.getElementById('client-address').value.trim();
-
-    if (!ipVal) {
-        alert("Пожалуйста, укажите ИП!");
-        document.getElementById('client-ip').focus();
-        return;
-    }
-
-    if (!addressVal) {
-        alert("Пожалуйста, укажите адрес доставки / название магазина!");
-        document.getElementById('client-address').focus();
-        return;
-    }
-
-    let message = "НОВЫЙ ЗАКАЗ (Madlen Fabrica)\n\n";
-    message += `ИП: ${ipVal}\n`;
-    message += `Адрес / Магазин: ${addressVal}\n\n`;
-    message += "СОСТАВ ЗАКАЗА:\n";
-
-    let hasItems = false;
-    let total = 0;
-
-    document.querySelectorAll('.product-item').forEach(item => {
-        const input = item.querySelector('.counter input');
-        const qty = parseInt(input.value) || 0;
-        if (qty > 0) {
-            hasItems = true;
-            const name = item.querySelector('.product-name').innerText.trim();
-            const price = parseFloat(input.getAttribute('data-price')) || 0;
-            const sum = qty * price;
-            total += sum;
-            message += `• ${name}\n   ${qty} шт x ${price} ₸ = ${sum} ₸\n`;
+        function calculateTotal() {
+            const items = document.querySelectorAll('.qty-input');
+            let total = 0;
+            items.forEach(item => {
+                const qty = parseInt(item.value) || 0;
+                const price = parseInt(item.getAttribute('data-price')) || 0;
+                total += qty * price;
+            });
+            document.getElementById('totalSum').innerText = total;
         }
-    });
 
-    if (!hasItems) {
-        alert("Выберите хотя бы один товар!");
-        return;
-    }
+        function sendToWhatsApp() {
+            const ipName = document.getElementById('ipName').value.trim();
+            const address = document.getElementById('address').value.trim();
+            const comment = document.getElementById('comment').value.trim();
+            const items = document.querySelectorAll('.qty-input');
 
-    message += `\nИТОГО: ${total.toLocaleString('ru-RU')} ₸`;
+            let orderList = "";
+            let totalSum = 0;
 
-    const encodedMsg = encodeURIComponent(message);
-    window.open(`https://wa.me/?text=${encodedMsg}`, '_blank');
-}
+            items.forEach(item => {
+                const qty = parseInt(item.value) || 0;
+                if (qty > 0) {
+                    const name = item.getAttribute('data-name');
+                    const price = parseInt(item.getAttribute('data-price'));
+                    const sum = qty * price;
+                    totalSum += sum;
+                    orderList += `• ${name} — ${qty} шт. x ${price} = ${sum} ₸\n`;
+                }
+            });
 
-renderCatalog();
-</script>
+            if (!orderList) {
+                alert("Выберите хотя бы один товар!");
+                return;
+            }
+
+            let message = "📦 *Новый заказ*\n\n";
+            if (ipName) message += `🏢 *ИП:* ${ipName}\n`;
+            if (address) message += `📍 *Адрес:* ${address}\n`;
+            
+            message += `\n🛒 *Выбранные товары:*\n${orderList}`;
+            message += `\n💰 *Итого:* ${totalSum} ₸\n`;
+            
+            if (comment) message += `\n📝 *Комментарий:* ${comment}\n`;
+
+            const waUrl = "https://api.whatsapp.com/send?text=" + encodeURIComponent(message);
+            window.open(waUrl, '_blank');
+        }
+    </script>
 
 </body>
 </html>
